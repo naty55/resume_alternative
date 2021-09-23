@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ResumeAlternativeApplication {
 
 	public static void main(String[] args) {
+		// Check
 		SpringApplication.run(ResumeAlternativeApplication.class, args);
 	}
 
