@@ -12,7 +12,7 @@
 	<artifactId>resume_alternative</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>resume_alternative</name>
-	<description>Demo project for Spring Boot</description>
+	<description>A website for building pro CV</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
