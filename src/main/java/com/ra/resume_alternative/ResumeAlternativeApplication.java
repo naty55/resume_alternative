@@ -1,11 +1,15 @@
 package com.ra.resume_alternative;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 
-@Controller
+
 @SpringBootApplication
 public class ResumeAlternativeApplication {
 
@@ -13,9 +17,14 @@ public class ResumeAlternativeApplication {
 		SpringApplication.run(ResumeAlternativeApplication.class, args);
 	}
 
-	@GetMapping("/")
-    public String index() {
-		return "test";
-    }
-
+	@Bean
+	CommandLineRunner run(ApplicationContext ctx) {
+		return a -> {
+			System.out.println(ctx.getBean("users"));
+			String[] beans = ctx.getBeanDefinitionNames();
+			Arrays.sort(beans);
+			Stream.of(beans).
+			forEach(System.out::println);
+		};
+	}
 }
