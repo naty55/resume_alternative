@@ -12,7 +12,7 @@
 	<artifactId>resume_alternative</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>resume_alternative</name>
-	<description>A website for building pro CV</description>
+	<description>ResumeAlternative - A website for building pro CV</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -44,16 +44,31 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		  </dependency>
+
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
+		<!-- Template engine -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+
+		<!-- Security-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		
 	</dependencies>
 
 	<build>
