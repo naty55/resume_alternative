@@ -1,11 +1,20 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="./fragments/base :: header"> 
-    <title>Getting Started: Serving Web Content</title> 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<head th:include="./fragments/base :: header"></head>
+<head>
+    <title>Resume Alternative</title> 
 </head>
 <body>
     <div th:replace="./fragments/base :: navbar"></div>
-    <p th:text="'Hello, ' + ${map.name} + '!'" />
+
+    <div>
+        <h1>Welcome To Resume Alternative</h1>
+        <div>
+            <h2>Inspire Your Resume</h2>
+            <h3>Create and Build Proffesinal looking CVs</h3>
+        </div>
+    </div>
+
+
 </body>
 </html>
