@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
+<!--Bootstrap fragment header-->
+
 <head th:fragment="header">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -13,10 +15,14 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
+<!--End of header fragment -->
+
+<!-- Navigation bar fragment-->
 <div th:fragment="navbar">
   <nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
-    <a class="navbar-brand" th:href="@{~/}">Resume Alternative</a>
+    <a class="navbar-brand" th:href="@{~/}"><img src="/favicon.ico" alt=""> Resume Alternative</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -28,12 +34,12 @@
           <a class="nav-link" th:href="@{~/}">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item dropdown active">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" th:href="@{~/build}" id="navbarDropdown" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Create
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Templates</a>
+            <a class="dropdown-item" th:href="@{~/build/templates}">Templates</a>
             <a class="dropdown-item" href="#">Another action</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">Something else here</a>
@@ -43,12 +49,32 @@
           <a class="nav-link disabled" href="#">Disabled</a>
         </li>
       </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
+      <ul class="navbar-nav my-2 my-lg-0">
+
+        <li class="nav-item active">
+          <a class="nav-link" th:unless=${isLoggedIn} th:href="@{~/auth/login}">Login</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" th:unless=${isLoggedIn} th:href="@{~/auth/signup}">Signup</a>
+        </li>
+        <li class="nav-item dropdown active" th:if=${isLoggedIn}>
+          <a class="nav-link dropdown-toggle" th:href="@{~/user/profile}" id="navbarDropdown" role="button"
+            data-toggle="dropdown" aria-haspopup="true" th:text=${username} aria-expanded="false">
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" th:href="@{~/user/profile}">Profile</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <div class="dropdown-divider"></div>
+            <form method="POST" th:action="@{~/auth/logout}">
+              <button type="submit" class="dropdown-item">logout</button>
+            </form>
+          </div>
+        </li>
+
+      </ul>
     </div>
   </nav>
 </div>
+<!--End of navigation bar fragment-->
 
 </html>
