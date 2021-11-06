@@ -26,7 +26,7 @@ public class UserRepositoryTest {
 
     @Test
     void testCreateUser() throws ParseException {
-        User user = new User(1, "test_user", "test_email", "12345678", "01/01/2020", "ROLE_USER");
+        User user = new User(1, "test_user", "test_email", "12345678", "01/01/2020", "ROLE_USER", true);
         
         
         User savedUser = usersRepo.save(user);
@@ -37,6 +37,7 @@ public class UserRepositoryTest {
         assertThat(savedUser.getName()).isEqualTo(existUser.getName());
         assertThat(savedUser.getId()).isEqualTo(existUser.getId());
         assertThat(savedUser.getPassword()).isEqualTo(existUser.getPassword());
+        assertThat(savedUser.isVerfiedEmail()).isEqualTo(existUser.isVerfiedEmail());
     }
     
 }
