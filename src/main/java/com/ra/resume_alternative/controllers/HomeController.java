@@ -2,6 +2,7 @@ package com.ra.resume_alternative.controllers;
 
 import java.util.List;
 
+import com.ra.resume_alternative.security.SecurityService;
 import com.ra.resume_alternative.domain.User;
 import com.ra.resume_alternative.repositories.Users;
 
@@ -20,13 +21,12 @@ public class HomeController {
     @Autowired
     Users repo;
 
+    @Autowired
+    SecurityService securityService;
+
     @RequestMapping("/")
     public String index(Model model, Authentication auth) {
-        if (auth != null) {
-            model.addAttribute("name", auth.getName());
-            model.addAttribute("isLoggedIn", true);   
-        }
-
+        securityService.isAuthenticatedAndModel(auth, model);
         model.addAttribute("users", repo.findAll());
         return "index";
     }
