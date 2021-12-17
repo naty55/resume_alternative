@@ -1,11 +1,9 @@
-package com.ra.resume_alternative;
+package com.ra.resume_alternative.user;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.ra.resume_alternative.domain.User;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,13 +20,23 @@ public class MysqlUserDetails implements UserDetails{
 
     public MysqlUserDetails(User user) {
         userName = user.getName();
-        email    = user.getEmail();
+        email = user.getEmail();
         password = user.getPassword();
         verfiedEmail = user.isVerfiedEmail();
 
         authorities = Arrays.stream(user.getRoles().split(","))
         .map(SimpleGrantedAuthority::new)
         .collect(Collectors.toList());
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 

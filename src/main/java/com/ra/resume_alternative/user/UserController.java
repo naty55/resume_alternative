@@ -1,4 +1,4 @@
-package com.ra.resume_alternative.controllers;
+package com.ra.resume_alternative.user;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

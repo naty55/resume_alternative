@@ -1,4 +1,4 @@
-package com.ra.resume_alternative.domain;
+package com.ra.resume_alternative.user;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

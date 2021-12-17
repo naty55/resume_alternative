@@ -1,14 +1,17 @@
 package com.ra.resume_alternative.security;
 
+import java.security.Principal;
 import java.util.Arrays;
 
-import com.ra.resume_alternative.domain.User;
+import com.ra.resume_alternative.user.User;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -40,6 +43,7 @@ public class SecurityService {
      */
     public boolean isAuthenticatedAndModel(Authentication auth, Model model) {
         boolean isAuthenticated = this.isAuthenticated(auth);
+        
         if(isAuthenticated) {
             model.addAttribute("isLoggedIn", true);
             model.addAttribute("username", auth.getName());

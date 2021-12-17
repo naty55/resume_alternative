@@ -1,8 +1,5 @@
 package com.ra.resume_alternative;
 
-import java.text.ParseException;
-
-import com.ra.resume_alternative.domain.User;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,8 @@
-package com.ra.resume_alternative.controllers;
+package com.ra.resume_alternative.build;
 
 import java.util.Optional;
 
-import com.ra.resume_alternative.domain.User;
+import com.ra.resume_alternative.user.User;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

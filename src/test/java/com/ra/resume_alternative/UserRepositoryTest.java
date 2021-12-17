@@ -2,8 +2,8 @@ package com.ra.resume_alternative;
 
 import java.text.ParseException;
 
-import com.ra.resume_alternative.domain.User;
-import com.ra.resume_alternative.repositories.Users;
+import com.ra.resume_alternative.user.User;
+import com.ra.resume_alternative.user.UserRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class UserRepositoryTest {
     TestEntityManager entityManager;
 
     @Autowired
-    Users usersRepo;
+    UserRepository usersRepo;
 
     @Test
     void testCreateUser() throws ParseException {

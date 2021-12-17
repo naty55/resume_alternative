@@ -1,11 +1,15 @@
-package com.ra.resume_alternative;
+package com.ra.resume_alternative.auth;
+
+import com.ra.resume_alternative.user.MysqlUserDetails;
+import com.ra.resume_alternative.user.MysqlUserDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -21,16 +25,14 @@ public class MysqlAuthProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getName());
-        if (
-            passwordEncoder.matches(authentication.getCredentials().toString(), userDetails.getPassword()) && 
-            userDetails.getUsername().equals(authentication.getName())
-            ) {
+        MysqlUserDetails userDetails = (MysqlUserDetails) userDetailsService.loadUserByEmail(authentication.getPrincipal().toString());
+        if (passwordEncoder.matches(authentication.getCredentials().toString(), userDetails.getPassword())) {
             return new UsernamePasswordAuthenticationToken(
-                authentication.getName(),
+                userDetails,
                 authentication.getCredentials().toString(), 
                 userDetails.getAuthorities());
         }
+        
         return null;
     }
 
@@ -39,4 +41,5 @@ public class MysqlAuthProvider implements AuthenticationProvider {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
     
+	
 }
