@@ -1,17 +1,18 @@
 package com.ra.resume_alternative.security;
 
-import java.security.Principal;
 import java.util.Arrays;
 
+import com.ra.resume_alternative.auth.MysqlAuthProvider;
+import com.ra.resume_alternative.user.MysqlUserDetails;
 import com.ra.resume_alternative.user.User;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -21,6 +22,10 @@ import org.springframework.ui.Model;
  */
 @Service
 public class SecurityService {
+
+    @Autowired
+    MysqlAuthProvider mysqlAuthProvider;
+
     /**
      * Check if authentication is a valid user
      * @param auth Authentication object
@@ -59,7 +64,8 @@ public class SecurityService {
     }
 
     public Authentication autoLogin(User user) {
-        Authentication auth = new UsernamePasswordAuthenticationToken(user.getName(), user.getPassword(), Arrays.asList(new SimpleGrantedAuthority(user.getRoles())));
+        UserDetails userDetails = new MysqlUserDetails(user);
+        Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, user.getPassword(), Arrays.asList(new SimpleGrantedAuthority(user.getRoles())));
         SecurityContextHolder.getContext().setAuthentication(auth);
         return auth;
     }
