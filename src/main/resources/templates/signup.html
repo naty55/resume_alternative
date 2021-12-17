@@ -4,22 +4,12 @@
 <head th:include="./fragments/base :: header"></head>
 <head>
     <title>RA Sign-Up</title>
+    <link rel="stylesheet" th:href="@{../css/login.css}">
 </head>
 
 <body>
     <div th:replace="./fragments/base :: navbar"></div>
-    <!-- 
-        <div>
-            <form th:action="@{/auth/signup}" th:object="${user}" method="post">
-                <input type="text" th:field="*{name}"  required minlength="2" maxlength="20" placeholder="Username"/>
-                <input type="email" th:field="*{email}"  placeholder="Email" required />
-                <input type="password" th:field="*{password}" placeholder="Password" required minlength="8" maxlength="20"/>
-                <button type="submit">Sign Up</button> 
-
-            </form>
-        </div> -->
-
-    <style>
+    <!-- <style>
         body {
             color: #fff;
             background: #19aa8d;
@@ -131,8 +121,8 @@
             top: 18px;
             font-size: 7px;
             position: absolute;
-        }
-    </style>
+        } 
+    </style> -->
     <div class="signup-form">
         <form th:action="@{/auth/signup}" th:object="${user}" method="post">
             <h2>Sign Up</h2>
