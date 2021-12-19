@@ -3,6 +3,7 @@ package com.ra.resume_alternative.user;
 import com.ra.resume_alternative.security.SecurityService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

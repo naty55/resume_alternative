@@ -1,15 +1,10 @@
 package com.ra.resume_alternative.security;
 
 
-import java.util.List;
-
 import com.ra.resume_alternative.auth.MysqlAuthProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 			.antMatchers("/*","/css/*", "/auth/**").permitAll()
-			.antMatchers("/user/**", "/build/**").hasAnyRole("USER", "ADMIN")
+			.antMatchers("/build/**", "/user/**").hasAnyRole("USER", "ADMIN")
 			.anyRequest().authenticated()
 			.and()
 			.formLogin()
