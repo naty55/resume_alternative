@@ -23,8 +23,6 @@ public class MysqlAuthProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        System.out.println("in mysqlAuthProvider"); 
-        System.out.println(authentication.getPrincipal());
         MysqlUserDetails userDetails = (MysqlUserDetails) userDetailsService.loadUserByEmail(authentication.getPrincipal().toString());
         if (passwordEncoder.matches(authentication.getCredentials().toString(), userDetails.getPassword())) {
             return new UsernamePasswordAuthenticationToken(
