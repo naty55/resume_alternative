@@ -3,22 +3,26 @@ package com.ra.resume_alternative.user;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-@Entity
-@Table(name = "users")
+import com.ra.resume_alternative.resume.Resume;
+
+
+@Entity(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long userId;
     private String name;
 
     @Column(unique = true, nullable = false)
@@ -28,11 +32,14 @@ public class User {
     private String roles;
     private boolean verfiedEmail;
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+    Set<Resume> resumes;
+
+
     @Transient
     private SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
     
-    public User(long id, String name, String email, String password, String date, String roles, boolean verfiedEmail) throws ParseException {
-        this.id = id;
+    public User(String name, String email, String password, String date, String roles, boolean verfiedEmail) throws ParseException {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -69,11 +76,11 @@ public class User {
     }
     public User() {}
 
-    public Long getId() {
-        return id;
+    public Long getUserId() {
+        return userId;
     }
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(Long id) {
+        this.userId = id;
     }
     public String getName() {
         return name;
@@ -93,10 +100,27 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void setResumes(Set<Resume> resumes) {
+        resumes.forEach(r -> this.addResume(r));
+    }
+    public Set<Resume> getResumes() {
+        return this.resumes;
+    }
+    public void addResume(Resume resume) {
+        this.resumes.add(resume);
+        resume.setUser(this);
+    }
+    public void removeResume(Resume resume) {
+        if(resumes.contains(resume)) {
+            resumes.remove(resume);
+            resume.setUser(null);
+        }
+    }
     
     @Override
     public String toString() {
-        return "User [email=" + email + ", id=" + id + ", name=" + name + ", password=" + password + "]";
+        return "User [email=" + email + ", id=" + userId + ", name=" + name + ", password=" + password + "]";
     }
     @Override
     public int hashCode() {
