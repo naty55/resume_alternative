@@ -1,10 +1,16 @@
 package com.ra.resume_alternative.resume;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-@Entity
-@Table(name = "skills")
+@Entity(name = "skills")
 public class ResumeSkill {
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Long skillId;
+    String skillName;
+    Integer level;
+
 }
