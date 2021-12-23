@@ -34,6 +34,9 @@ public class Resume {
     @OneToMany(mappedBy ="resume", orphanRemoval = true, cascade = CascadeType.ALL)
     Set<ResumeSkill> skills = new HashSet<>();
 
+    @OneToMany(mappedBy = "resume", orphanRemoval = true, cascade = CascadeType.ALL)
+    Set<ResumeDetail> details = new HashSet<>();
+
     public Resume() {
 
     }
@@ -69,8 +72,10 @@ public class Resume {
         block.setResume(this);
     }
     public void removeBlock(ResumeBlock block) {
-        blocks.remove(block);
-        block.setResume(null);
+        if (blocks.contains(block)) {
+            blocks.remove(block);
+            block.setResume(null);
+        }
     }
     public void setBlocks(Set<ResumeBlock> blocks) {
         blocks.forEach(b -> this.addBlock(b));
@@ -86,8 +91,10 @@ public class Resume {
         skill.setResume(this);
     }
     public void removeSkill(ResumeSkill skill) {
-        skills.remove(skill);
-        skill.setResume(null);
+        if(skills.contains(skill)) {
+            skills.remove(skill);
+            skill.setResume(null);
+        }
     }
 
     
