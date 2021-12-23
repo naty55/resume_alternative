@@ -1,5 +1,6 @@
 package com.ra.resume_alternative;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -34,7 +35,12 @@ public class ResumeAlternativeApplication {
 	@Bean
 	InitializingBean fillDataBase(UserRepository repo, ResumeRepository resumeRepo) {
 		return () -> {
-			
+			repo.deleteAll();
+			User user = new User("Naty", "naty@gmail.com", passwordEncoder.encode("12345678"), "11/11/1998", "ROLE_USER");
+			repo.save(user);
+			ResumeBlock resumeBlock = new ResumeBlock();
+			user.addResume(new Resume(user, "untitled", Set.of(resumeBlock), Set.of(new ResumeSkill("English", 4, SkillType.Language))));
+			repo.save(user);
 		};
 	}
 
@@ -52,6 +58,10 @@ public class ResumeAlternativeApplication {
 	@Bean
 	public PasswordEncoder getPasswordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+	@Bean
+	public SimpleDateFormat ggg() {
+		return new SimpleDateFormat("MM/dd/yyyy");
 	}
 
 }
