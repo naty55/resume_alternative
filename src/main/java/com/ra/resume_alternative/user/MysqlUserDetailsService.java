@@ -17,7 +17,7 @@ public class MysqlUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = users.findByName(username);
+        Optional<User> user = users.findByUsername(username);
         user.orElseThrow(() -> new UsernameNotFoundException("Not found : " + username));
         return user.map(MysqlUserDetails::new).get();
 

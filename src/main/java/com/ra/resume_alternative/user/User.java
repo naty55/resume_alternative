@@ -3,6 +3,7 @@ package com.ra.resume_alternative.user;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,6 +17,8 @@ import javax.persistence.Transient;
 
 import com.ra.resume_alternative.resume.Resume;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 @Entity(name = "users")
 public class User {
@@ -23,7 +26,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
-    private String name;
+    private String username;
+    private String firstName;
+    private String lastName;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -33,14 +38,12 @@ public class User {
     private boolean verfiedEmail;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
-    Set<Resume> resumes;
+    Set<Resume> resumes = new HashSet<>();
 
 
-    @Transient
-    private SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-    
     public User(String name, String email, String password, String date, String roles, boolean verfiedEmail) throws ParseException {
-        this.name = name;
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        this.username = name;
         this.email = email;
         this.password = password;
         this.created = format.parse(date);
@@ -49,11 +52,7 @@ public class User {
     }
 
     public User(String name, String email, String password, String date, String roles) throws ParseException {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.created = format.parse(date);
-        this.roles = roles;
+        this(name, email, password, date, roles, true);
     }
 
     public boolean isVerfiedEmail() {
@@ -81,12 +80,6 @@ public class User {
     }
     public void setUserId(Long id) {
         this.userId = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
     }
     public String getEmail() {
         return email;
@@ -117,10 +110,36 @@ public class User {
             resume.setUser(null);
         }
     }
+
     
+    
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public String toString() {
-        return "User [email=" + email + ", id=" + userId + ", name=" + name + ", password=" + password + "]";
+        return "User [email=" + email + ", id=" + userId + ", name=" + username + ", password=" + password + "]";
     }
     @Override
     public int hashCode() {
@@ -145,6 +164,7 @@ public class User {
             return false;
         return true;
     }
+
     
 
   

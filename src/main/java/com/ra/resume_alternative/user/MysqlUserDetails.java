@@ -19,7 +19,7 @@ public class MysqlUserDetails implements UserDetails{
     private List<GrantedAuthority> authorities;
 
     public MysqlUserDetails(User user) {
-        userName = user.getName();
+        userName = user.getUsername();
         email = user.getEmail();
         password = user.getPassword();
         verfiedEmail = user.isVerfiedEmail();
