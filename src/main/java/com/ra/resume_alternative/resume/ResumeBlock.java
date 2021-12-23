@@ -1,26 +1,33 @@
 package com.ra.resume_alternative.resume;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 
 @Entity(name = "blocks")
 public class ResumeBlock {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long blockId;
-    Integer BlockOrder;
-
-    String paragarphs= "Block test";
-
+    private Long blockId;
+    private Integer blockOrder;
+    private String blockName;
     
     @ManyToOne
     @JoinColumn(name = "resume_id")
     Resume resume;
+
+    @OneToMany(mappedBy = "block", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    Set<ResumeSubBlock> subblocks = new HashSet<>();
 
 
     public Long getBlockId() {
@@ -34,24 +41,13 @@ public class ResumeBlock {
 
 
     public Integer getBlockOrder() {
-        return BlockOrder;
+        return blockOrder;
     }
 
 
     public void setBlockOrder(Integer blockOrder) {
-        BlockOrder = blockOrder;
+        this.blockOrder = blockOrder;
     }
-
-
-    public String getParagarphs() {
-        return paragarphs;
-    }
-
-
-    public void setParagarphs(String paragarphs) {
-        this.paragarphs = paragarphs;
-    }
-
 
     public Resume getResume() {
         return resume;
@@ -62,6 +58,38 @@ public class ResumeBlock {
         this.resume = resume;
     }
 
+    public void addSubBlock(ResumeSubBlock subBlock) {
+        subblocks.add(subBlock);
+        subBlock.setBlock(this);
+    }
+    public void removeSubBlock(ResumeSubBlock subBlock) {
+        if (subblocks.contains(subBlock)) {
+            subblocks.remove(subBlock);
+            subBlock.setBlock(null);
+        }
+    }
+
+
+    public String getBlockName() {
+        return blockName;
+    }
+
+
+    public void setBlockName(String blockName) {
+        this.blockName = blockName;
+    }
+
+
+    public Set<ResumeSubBlock> getSubblocks() {
+        return new HashSet<>(subblocks);
+    }
+
+
+    public void setSubblocks(Set<ResumeSubBlock> subblocks) {
+        subblocks.forEach(s -> addSubBlock(s));
+    }
+
+    
     
     
 }
