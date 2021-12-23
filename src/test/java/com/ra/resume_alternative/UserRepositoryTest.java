@@ -34,7 +34,7 @@ public class UserRepositoryTest {
         User existUser = entityManager.find(user.getClass(), user.getUserId());
 
         assertThat(savedUser.getEmail()).isEqualTo(existUser.getEmail());
-        assertThat(savedUser.getName()).isEqualTo(existUser.getName());
+        assertThat(savedUser.getUsername()).isEqualTo(existUser.getUsername());
         assertThat(savedUser.getUserId()).isEqualTo(existUser.getUserId());
         assertThat(savedUser.getPassword()).isEqualTo(existUser.getPassword());
         assertThat(savedUser.isVerfiedEmail()).isEqualTo(existUser.isVerfiedEmail());
