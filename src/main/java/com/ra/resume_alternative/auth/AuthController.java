@@ -30,13 +30,13 @@ public class AuthController {
     
     @GetMapping("/login")
     String login(Model model, Authentication auth) {
-        return securityService.isAuthenticatedAndView(auth, "/", "login");
+        return securityService.isAuthenticatedAndViewName(auth, "/", "login");
     }
 
     @GetMapping("/signup")
     String signup(Model model, Authentication auth) {
         model.addAttribute("user", new User());
-        return securityService.isAuthenticatedAndView(auth, "/", "signup");
+        return securityService.isAuthenticatedAndViewName(auth, "/", "signup");
     }
 
     @PostMapping("/signup")
