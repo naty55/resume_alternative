@@ -9,15 +9,14 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 import com.ra.resume_alternative.resume.Resume;
 
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Entity(name = "users")
@@ -36,8 +35,8 @@ public class User {
     private Date created;
     private String roles;
     private boolean verfiedEmail;
-
-    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+    
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     Set<Resume> resumes = new HashSet<>();
 
 

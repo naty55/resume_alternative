@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity(name = "skills")
 public class ResumeSkill {
     @Id
@@ -19,6 +21,7 @@ public class ResumeSkill {
 
     @ManyToOne
     @JoinColumn(name = "resume_id")
+    @JsonIgnore
     Resume resume;
 
     public ResumeSkill() {
@@ -26,9 +29,9 @@ public class ResumeSkill {
     }
     
     public ResumeSkill(String skillName, Integer level, SkillType skillType) {
-        this.skillName = skillName;
-        this.skillLevel = level; 
-        this.skillType = skillType;
+        setSkillName(skillName);
+        setSkillId(skillId); 
+        setSkillType(skillType);
     }
 
     public Long getSkillId() {
@@ -44,7 +47,7 @@ public class ResumeSkill {
     }
 
     public void setSkillName(String skillName) {
-        this.skillName = skillName;
+        this.skillName = skillName.toLowerCase();
     }
 
     public Integer getSkillLevel() {

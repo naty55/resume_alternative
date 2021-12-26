@@ -13,6 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.hibernate.annotations.Cascade;
+
 
 @Entity(name = "blocks")
 public class ResumeBlock {
@@ -24,10 +28,17 @@ public class ResumeBlock {
     
     @ManyToOne
     @JoinColumn(name = "resume_id")
+    @JsonIgnore
     Resume resume;
 
     @OneToMany(mappedBy = "block", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Set<ResumeSubBlock> subblocks = new HashSet<>();
+
+    public ResumeBlock() {
+        blockOrder = 1;
+        blockName = "Profile";
+        addSubBlock(new ResumeSubBlock());
+    }
 
 
     public Long getBlockId() {

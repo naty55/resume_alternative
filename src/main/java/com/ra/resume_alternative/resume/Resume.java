@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ra.resume_alternative.user.User;
 
 
@@ -20,26 +22,30 @@ public class Resume {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long resumeId;
+    private Long resumeId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    User user;
+    @JsonIgnore
+    private User user;
 
-    String title;
+    private String title;
+    private String styleName;
+    
 
-    @OneToMany(mappedBy = "resume", orphanRemoval = true, cascade = CascadeType.ALL)
-    Set<ResumeBlock> blocks = new HashSet<>();
+    @OneToMany(mappedBy = "resume", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<ResumeBlock> blocks = new HashSet<>();
 
-    @OneToMany(mappedBy ="resume", orphanRemoval = true, cascade = CascadeType.ALL)
-    Set<ResumeSkill> skills = new HashSet<>();
+    @OneToMany(mappedBy ="resume", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<ResumeSkill> skills = new HashSet<>();
 
-    @OneToMany(mappedBy = "resume", orphanRemoval = true, cascade = CascadeType.ALL)
-    Set<ResumeDetail> details = new HashSet<>();
+    @OneToMany(mappedBy = "resume", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<ResumeDetail> details = new HashSet<>();
 
     public Resume() {
 
     }
+
     public Resume(User user,String title, Set<ResumeBlock> blocks, Set<ResumeSkill> skills) {
         this.user = user;
         this.title = title;
@@ -97,6 +103,12 @@ public class Resume {
         }
     }
 
+    public String getStyleName() {
+        return styleName;
+    }
+    public void setStyleName(String styleName) {
+        this.styleName = styleName;
+    }
     
 
     

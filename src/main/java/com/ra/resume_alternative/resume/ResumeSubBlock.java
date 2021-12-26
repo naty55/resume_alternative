@@ -9,19 +9,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity
+
+@Entity(name = "subblock")
 public class ResumeSubBlock {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long subblockId;
     private String subblockTitle;
     private String content;
-    private Date from;
-    private Date to;
+    private Date startTime;
+    private Date endTime;
 
     @ManyToOne
     @JoinColumn(name = "block_id")
+    @JsonIgnore
     private ResumeBlock block;
 
     public Long getSubblockId() {
@@ -48,20 +51,18 @@ public class ResumeSubBlock {
     public void setSubblockTitle(String subblockName) {
         this.subblockTitle = subblockName;
     }
-    public Date getFrom() {
-        return from;
+    public Date getEndTime() {
+        return endTime;
     }
-    public void setFrom(Date from) {
-        this.from = from;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
-    public Date getTo() {
-        return to;
+    public Date getStartTime() {
+        return startTime;
     }
-    public void setTo(Date to) {
-        this.to = to;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
-    
-
     
 
 }

@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity(name = "resume_details")
 public class ResumeDetail {
     @Id
@@ -17,6 +19,7 @@ public class ResumeDetail {
 
     @ManyToOne
     @JoinColumn(name = "resume_id")
+    @JsonIgnore
     private Resume resume;
 
     public ResumeDetail() {
@@ -30,7 +33,7 @@ public class ResumeDetail {
         return value;
     }
     public void setValue(String value) {
-        this.value = value;
+        this.value = value.toLowerCase();
     }
     public DetailType getDetailType() {
         return detailType;
