@@ -13,7 +13,6 @@ public class ResumeService {
     ResumeRepository resumeRepository;
 
     public List<Resume> getResumesByUser(User user, Long page) {
-        System.out.println(resumeRepository.findByUser(user));
         return resumeRepository.findByUser(user);
     }
 }
