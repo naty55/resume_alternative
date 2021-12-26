@@ -2,7 +2,6 @@ package com.ra.resume_alternative.resume;
 
 import java.util.List;
 
-import com.ra.resume_alternative.user.MysqlUserDetails;
 import com.ra.resume_alternative.user.User;
 
 import org.springframework.beans.factory.annotation.Autowired;

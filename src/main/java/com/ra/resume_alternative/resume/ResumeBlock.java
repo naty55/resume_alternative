@@ -15,7 +15,6 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.hibernate.annotations.Cascade;
 
 
 @Entity(name = "blocks")

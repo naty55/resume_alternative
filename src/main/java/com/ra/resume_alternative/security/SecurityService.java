@@ -3,7 +3,6 @@ package com.ra.resume_alternative.security;
 import java.util.Arrays;
 
 import com.ra.resume_alternative.auth.MysqlAuthProvider;
-import com.ra.resume_alternative.user.MysqlUserDetails;
 import com.ra.resume_alternative.user.MysqlUserDetailsService;
 import com.ra.resume_alternative.user.User;
 
