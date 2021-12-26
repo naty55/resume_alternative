@@ -26,7 +26,9 @@ public class MysqlUserDetailsService implements UserDetailsService {
         Optional<User> user = users.findByEmail(email);
         user.orElseThrow(() -> new UsernameNotFoundException("Not found : " + email));
         return user.map(MysqlUserDetails::new).get();
-
+    }
+    public UserDetails getByUser(User user) {
+        return new MysqlUserDetails(user);
     }
 
 }
