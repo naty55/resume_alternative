@@ -1,7 +1,5 @@
 package com.ra.resume_alternative;
 
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Set;
 
 import com.ra.resume_alternative.resume.Resume;
@@ -14,8 +12,8 @@ import com.ra.resume_alternative.user.UserRepository;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,18 +26,19 @@ public class ResumeAlternativeApplication {
 	PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(ResumeAlternativeApplication.class).
-		run(args);
+		SpringApplication.run(ResumeAlternativeApplication.class, args);
 	}
 
 	@Bean
 	InitializingBean fillDataBase(UserRepository repo, ResumeRepository resumeRepo) {
 		return () -> {
+			resumeRepo.deleteAll();
 			repo.deleteAll();
 			User user = new User("Naty", "naty@gmail.com", passwordEncoder.encode("12345678"), "11/11/1998", "ROLE_USER");
+			System.out.println(user);
 			repo.save(user);
-			ResumeBlock resumeBlock = new ResumeBlock();
-			user.addResume(new Resume(user, "untitled", Set.of(resumeBlock), Set.of(new ResumeSkill("English", 4, SkillType.Language))));
+			System.out.println(user);
+			resumeRepo.save(new Resume(user, "untitled", Set.of(new ResumeBlock()), Set.of(new ResumeSkill("English", 4, SkillType.Language))));
 			repo.save(user);
 		};
 	}
@@ -49,8 +48,7 @@ public class ResumeAlternativeApplication {
 		return () -> {
 			System.out.println("Beans that had been initialized on stratup\n" +
 			"===================================\n");
-
-			Arrays.stream(ctx.getBeanDefinitionNames()).sorted().forEach(System.out::println);
+			// Arrays.stream(ctx.getBeanDefinitionNames()).sorted().forEach(System.out::println);
 		};
 	}
 
@@ -58,10 +56,6 @@ public class ResumeAlternativeApplication {
 	@Bean
 	public PasswordEncoder getPasswordEncoder() {
 		return new BCryptPasswordEncoder();
-	}
-	@Bean
-	public SimpleDateFormat ggg() {
-		return new SimpleDateFormat("MM/dd/yyyy");
 	}
 
 }
