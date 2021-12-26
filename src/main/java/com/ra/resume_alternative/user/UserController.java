@@ -42,7 +42,6 @@ public class UserController {
     @ResponseBody
     public Collection<Resume> _getResumes(@RequestParam("page") Optional<Long> page, Authentication auth) {
         User user = userService.getUserFromAuthentication(auth);
-        
         List<Resume> rv = resumeService.getResumesByUser(user, page.orElseGet(() -> 0L));
         return rv;
     }
