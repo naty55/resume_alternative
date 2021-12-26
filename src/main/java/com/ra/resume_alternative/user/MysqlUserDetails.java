@@ -11,34 +11,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class MysqlUserDetails implements UserDetails{ 
 
-
-    private String userName;
-    private String email;
-    private String password;
-    private boolean verfiedEmail;
+    private User user;
     private List<GrantedAuthority> authorities;
 
     public MysqlUserDetails(User user) {
-        userName = user.getName();
-        email = user.getEmail();
-        password = user.getPassword();
-        verfiedEmail = user.isVerfiedEmail();
-
+        this.user = user;
         authorities = Arrays.stream(user.getRoles().split(","))
         .map(SimpleGrantedAuthority::new)
         .collect(Collectors.toList());
     }
 
+    public User getUser() {
+        return user;
+    }
+
 
     public String getEmail() {
-        return email;
+        return user.getEmail();
     }
-
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
 
     public MysqlUserDetails() {}
 
@@ -51,13 +41,13 @@ public class MysqlUserDetails implements UserDetails{
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
 
     @Override
     public String getUsername() {
-        return userName;
+        return user.getUsername();
     }
 
 
@@ -81,7 +71,7 @@ public class MysqlUserDetails implements UserDetails{
 
     @Override
     public boolean isEnabled() {
-        return verfiedEmail;
+        return user.isVerfiedEmail();
     }
 
 }

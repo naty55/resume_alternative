@@ -135,7 +135,7 @@
                             <span class="fa fa-user"></span>
                         </span>
                     </div>
-                    <input type="text" class="form-control" th:field="*{name}" placeholder="Username" required>
+                    <input type="text" class="form-control" th:field="*{username}" placeholder="Username" required>
                 </div>
             </div>
             <div class="form-group">
@@ -148,6 +148,28 @@
                     <input type="email" class="form-control" th:field="*{email}" placeholder="Email" required>
                 </div>
             </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fa fa-paper-plane"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" th:field="*{firstName}" placeholder="First Name" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fa fa-paper-plane"></i>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control" th:field="*{lastName}" placeholder="Last Name" required>
+                </div>
+            </div>
+            
+            
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">

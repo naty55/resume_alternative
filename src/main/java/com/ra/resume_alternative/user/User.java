@@ -3,23 +3,31 @@ package com.ra.resume_alternative.user;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.OneToMany;
 
-@Entity
-@Table(name = "users")
+import com.ra.resume_alternative.resume.Resume;
+
+
+
+@Entity(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private String name;
+    private Long userId;
+    private String username;
+    private String firstName;
+    private String lastName;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -27,13 +35,14 @@ public class User {
     private Date created;
     private String roles;
     private boolean verfiedEmail;
-
-    @Transient
-    private SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
     
-    public User(long id, String name, String email, String password, String date, String roles, boolean verfiedEmail) throws ParseException {
-        this.id = id;
-        this.name = name;
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    Set<Resume> resumes = new HashSet<>();
+
+
+    public User(String name, String email, String password, String date, String roles, boolean verfiedEmail) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        this.username = name;
         this.email = email;
         this.password = password;
         this.created = format.parse(date);
@@ -42,11 +51,7 @@ public class User {
     }
 
     public User(String name, String email, String password, String date, String roles) throws ParseException {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.created = format.parse(date);
-        this.roles = roles;
+        this(name, email, password, date, roles, true);
     }
 
     public boolean isVerfiedEmail() {
@@ -69,17 +74,11 @@ public class User {
     }
     public User() {}
 
-    public Long getId() {
-        return id;
+    public Long getUserId() {
+        return userId;
     }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
+    public void setUserId(Long id) {
+        this.userId = id;
     }
     public String getEmail() {
         return email;
@@ -93,10 +92,53 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void setResumes(Set<Resume> resumes) {
+        resumes.forEach(r -> this.addResume(r));
+    }
+    public Set<Resume> getResumes() {
+        return this.resumes;
+    }
+    public void addResume(Resume resume) {
+        this.resumes.add(resume);
+        resume.setUser(this);
+    }
+    public void removeResume(Resume resume) {
+        if(resumes.contains(resume)) {
+            resumes.remove(resume);
+            resume.setUser(null);
+        }
+    }
+
     
+    
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public String toString() {
-        return "User [email=" + email + ", id=" + id + ", name=" + name + ", password=" + password + "]";
+        return "User [email=" + email + ", id=" + userId + ", name=" + username + ", password=" + password + "]";
     }
     @Override
     public int hashCode() {
@@ -121,6 +163,7 @@ public class User {
             return false;
         return true;
     }
+
     
 
   

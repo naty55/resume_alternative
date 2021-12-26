@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.ra.resume_alternative.auth.MysqlAuthProvider;
 import com.ra.resume_alternative.user.MysqlUserDetails;
+import com.ra.resume_alternative.user.MysqlUserDetailsService;
 import com.ra.resume_alternative.user.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class SecurityService {
 
     @Autowired
     MysqlAuthProvider mysqlAuthProvider;
+
+    @Autowired
+    MysqlUserDetailsService mysqlUserDetailsService;
 
     /**
      * Check if authentication is a valid user
@@ -56,7 +60,7 @@ public class SecurityService {
         return isAuthenticated;
     }
 
-    public String isAuthenticatedAndView(Authentication auth, String redirectTo, String DefaultView) {
+    public String isAuthenticatedAndViewName(Authentication auth, String redirectTo, String DefaultView) {
         if (isAuthenticated(auth)) {
             return "redirect:" + redirectTo;
         }
@@ -64,7 +68,7 @@ public class SecurityService {
     }
 
     public Authentication autoLogin(User user) {
-        UserDetails userDetails = new MysqlUserDetails(user);
+        UserDetails userDetails = mysqlUserDetailsService.getByUser(user);
         Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, user.getPassword(), Arrays.asList(new SimpleGrantedAuthority(user.getRoles())));
         SecurityContextHolder.getContext().setAuthentication(auth);
         return auth;
