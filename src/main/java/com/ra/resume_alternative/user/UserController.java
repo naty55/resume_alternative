@@ -1,10 +1,9 @@
 package com.ra.resume_alternative.user;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import com.ra.resume_alternative.resume.Resume;
 import com.ra.resume_alternative.resume.ResumeService;
 import com.ra.resume_alternative.security.SecurityService;
 
@@ -38,12 +37,11 @@ public class UserController {
         return "profile";
     }
 
-    @GetMapping(value="/_getResumes")
+    @GetMapping(value="/_getResumesNames")
     @ResponseBody
-    public Collection<Resume> _getResumes(@RequestParam("page") Optional<Long> page, Authentication auth) {
+    public List<Map<String, String>> _getResumesNames(@RequestParam("page") Optional<Long> page, Authentication auth) {
         User user = userService.getUserFromAuthentication(auth);
-        List<Resume> rv = resumeService.getResumesByUser(user, page.orElseGet(() -> 0L));
-        return rv;
+        return resumeService.getResumesNamesByUser(user, page.orElse(0L));
     }
     
     

@@ -32,13 +32,14 @@ public class ResumeAlternativeApplication {
 	@Bean
 	InitializingBean fillDataBase(UserRepository repo, ResumeRepository resumeRepo) {
 		return () -> {
-			resumeRepo.deleteAll();
+			// resumeRepo.deleteAll();
 			repo.deleteAll();
 			User user = new User("Naty", "naty@gmail.com", passwordEncoder.encode("12345678"), "11/11/1998", "ROLE_USER");
 			System.out.println(user);
 			repo.save(user);
 			System.out.println(user);
 			resumeRepo.save(new Resume(user, "untitled", Set.of(new ResumeBlock()), Set.of(new ResumeSkill("English", 4, SkillType.Language))));
+			resumeRepo.save(new Resume(user, "untitled", Set.of(new ResumeBlock(), new ResumeBlock()), Set.of(new ResumeSkill("English", 4, SkillType.Language))));
 			repo.save(user);
 		};
 	}

@@ -1,6 +1,9 @@
 package com.ra.resume_alternative.resume;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ra.resume_alternative.user.User;
 
@@ -12,7 +15,14 @@ public class ResumeService {
     @Autowired
     ResumeRepository resumeRepository;
 
-    public List<Resume> getResumesByUser(User user, Long page) {
-        return resumeRepository.findByUser(user);
+    public List<Map<String,String>> getResumesNamesByUser(User user, Long page) {
+        List<Map<String, String>> rv = new ArrayList<>();
+        for (Resume r: resumeRepository.findByUser(user)) {
+            Map<String, String> map = new HashMap<>();
+            map.put("title", r.getTitle());
+            map.put("id", String.valueOf(r.getResumeId()));
+            rv.add(map);
+        }
+        return rv;
     }
 }
