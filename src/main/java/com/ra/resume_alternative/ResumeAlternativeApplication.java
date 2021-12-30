@@ -2,11 +2,11 @@ package com.ra.resume_alternative;
 
 import java.util.Set;
 
-import com.ra.resume_alternative.resume.Resume;
-import com.ra.resume_alternative.resume.ResumeBlock;
 import com.ra.resume_alternative.resume.ResumeRepository;
-import com.ra.resume_alternative.resume.ResumeSkill;
-import com.ra.resume_alternative.resume.SkillType;
+import com.ra.resume_alternative.resume.entity.Resume;
+import com.ra.resume_alternative.resume.entity.ResumeBlock;
+import com.ra.resume_alternative.resume.entity.ResumeSkill;
+import com.ra.resume_alternative.resume.entity.SkillType;
 import com.ra.resume_alternative.user.User;
 import com.ra.resume_alternative.user.UserRepository;
 
@@ -47,8 +47,8 @@ public class ResumeAlternativeApplication {
 	@Bean
 	InitializingBean printAllBeans(org.springframework.context.ApplicationContext ctx) {
 		return () -> {
-			System.out.println("Beans that had been initialized on stratup\n" +
-			"===================================\n");
+			// System.out.println("Beans that had been initialized on stratup\n" +
+			// "===================================\n");
 			// Arrays.stream(ctx.getBeanDefinitionNames()).sorted().forEach(System.out::println);
 		};
 	}
