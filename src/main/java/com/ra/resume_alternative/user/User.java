@@ -15,7 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.ra.resume_alternative.resume.Resume;
+import com.ra.resume_alternative.resume.entity.Resume;
 
 
 

@@ -37,7 +37,7 @@ public class UserController {
         return "profile";
     }
 
-    @GetMapping(value="/_getResumesNames")
+    @GetMapping("/_getResumesNames")
     @ResponseBody
     public List<Map<String, String>> _getResumesNames(@RequestParam("page") Optional<Long> page, Authentication auth) {
         User user = userService.getUserFromAuthentication(auth);
