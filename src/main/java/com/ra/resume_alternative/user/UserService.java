@@ -24,7 +24,7 @@ public class UserService {
 
     public User getUserFromAuthentication(Authentication auth) {
         User user;
-        if (auth.getPrincipal().getClass() == MysqlUserDetails.class) {
+        if (auth.getPrincipal().getClass().isAssignableFrom(MysqlUserDetails.class)) {
             user = ((MysqlUserDetails) auth.getPrincipal()).getUser();
         } else {
             user = getUserByEmail(auth.getPrincipal().toString());
