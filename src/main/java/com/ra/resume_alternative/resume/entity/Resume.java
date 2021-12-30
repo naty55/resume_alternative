@@ -1,4 +1,4 @@
-package com.ra.resume_alternative.resume;
+package com.ra.resume_alternative.resume.entity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +24,7 @@ public class Resume {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long resumeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
