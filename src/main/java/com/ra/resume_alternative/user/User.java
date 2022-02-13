@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.ra.resume_alternative.resume.entity.Resume;
+import com.ra.resume_alternative.resume.entity.ResumeDetail;
+import com.ra.resume_alternative.resume.entity.ResumeSkill;
 
 
 
@@ -35,8 +37,14 @@ public class User {
     private Date created;
     private String roles;
     private boolean verfiedEmail;
+
+    @OneToMany(orphanRemoval = true, mappedBy = "userId", fetch = FetchType.LAZY)
+    Set<ResumeSkill> skills = new HashSet<>();
+
+    @OneToMany(orphanRemoval = true, mappedBy="userId", fetch = FetchType.LAZY)
+    Set<ResumeDetail> details = new HashSet<>();
     
-    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<Resume> resumes = new HashSet<>();
 
 
@@ -49,6 +57,8 @@ public class User {
         this.roles = roles;
         this.verfiedEmail = verfiedEmail;
     }
+
+    public User() {}
 
     public User(String name, String email, String password, String date, String roles) throws ParseException {
         this(name, email, password, date, roles, true);
@@ -72,7 +82,6 @@ public class User {
     public void setCreated(Date created) {
         this.created = created;
     }
-    public User() {}
 
     public Long getUserId() {
         return userId;
@@ -110,7 +119,16 @@ public class User {
         }
     }
 
+    public void addDetail(ResumeDetail detail) {
+        this.details.add(detail);
+        detail.setUserId(this.userId);
+    }
+
     
+    public void addSkill(ResumeSkill skill) {
+        skills.add(skill);
+        skill.setUserId(this.userId);
+    }
     
     public String getUsername() {
         return username;
