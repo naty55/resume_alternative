@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.ra.resume_alternative.resume.ResumeService;
+import com.ra.resume_alternative.resume.service.ResumeService;
 import com.ra.resume_alternative.security.SecurityService;
 
 import org.springframework.beans.factory.annotation.Autowired;
