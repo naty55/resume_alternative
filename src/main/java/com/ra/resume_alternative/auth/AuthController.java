@@ -1,14 +1,12 @@
 package com.ra.resume_alternative.auth;
 
-import java.util.Calendar;
 
 import com.ra.resume_alternative.security.SecurityService;
 import com.ra.resume_alternative.user.User;
-import com.ra.resume_alternative.user.UserRepository;
+import com.ra.resume_alternative.user.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("auth/")
 public class AuthController {
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     @Autowired
-    UserRepository usersRepo;
+    UserService userService;
 
     @Autowired
     SecurityService securityService;
@@ -41,10 +37,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     String signup(Model model, User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setCreated(Calendar.getInstance().getTime());
-        user.setRoles("ROLE_USER");
-        usersRepo.save(user);
+        user = userService.createUser(user);
         Authentication auth = securityService.autoLogin(user);
         securityService.isAuthenticatedAndModel(auth, model);
         return "redirect:/";
