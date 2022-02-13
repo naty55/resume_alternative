@@ -13,7 +13,17 @@
             <button>edit</button>
         </div>
 
-        <div>
+        <div id="resumes">
             <div><h3>My CV's</h3></div>
+            <script>
+                const div = document.createElement('div');
+                fetch("/user/_getResumesNames")
+                .then(r => r.json())
+                .then(data => data.forEach(element => {
+                    div.innerHTML = '<a href="/build/' + element.id + '">' + element.title +"</a>"
+                }));
+                document.getElementById("resumes").appendChild(div);
+            </script>
+
         </div>
     </body>

@@ -10,6 +10,10 @@
 
 <body>
     <div><p>Build page</p></div>
+    <div th:if="${resume}" th:text="${resume.title}"></div>
+    <div th:unless="${resume}">Couldn't find requested resume</div>
+
+
 </body>
 
 </html>
