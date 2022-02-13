@@ -27,12 +27,8 @@ public class UserRepositoryTest {
     @Test
     void testCreateUser() throws ParseException {
         User user = new User("test_user", "test_email", "12345678", "01/01/2020", "ROLE_USER", true);
-        
-        
         User savedUser = usersRepo.save(user);
-        
         User existUser = entityManager.find(user.getClass(), user.getUserId());
-
         assertThat(savedUser.getEmail()).isEqualTo(existUser.getEmail());
         assertThat(savedUser.getUsername()).isEqualTo(existUser.getUsername());
         assertThat(savedUser.getUserId()).isEqualTo(existUser.getUserId());
