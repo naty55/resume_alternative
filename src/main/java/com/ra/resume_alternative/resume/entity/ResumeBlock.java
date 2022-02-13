@@ -4,40 +4,30 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
-
-@Entity(name = "blocks")
+@Entity(name="blocks")
 public class ResumeBlock {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long blockId;
     private Integer blockOrder;
     private String blockName;
-    
-    @ManyToOne
-    @JoinColumn(name = "resume_id")
-    @JsonIgnore
-    Resume resume;
 
-    @OneToMany(mappedBy = "block", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy ="blockId")
     Set<ResumeSubBlock> subblocks = new HashSet<>();
 
-    public ResumeBlock() {
-        blockOrder = 1;
-        blockName = "Profile";
-        addSubBlock(new ResumeSubBlock());
-    }
+    @Column(nullable = false)
+    private Long resumeId;
+
+    public ResumeBlock() {}
 
 
     public Long getBlockId() {
@@ -59,23 +49,16 @@ public class ResumeBlock {
         this.blockOrder = blockOrder;
     }
 
-    public Resume getResume() {
-        return resume;
-    }
 
-
-    public void setResume(Resume resume) {
-        this.resume = resume;
-    }
 
     public void addSubBlock(ResumeSubBlock subBlock) {
         subblocks.add(subBlock);
-        subBlock.setBlock(this);
+        subBlock.setBlockId(blockId);
     }
     public void removeSubBlock(ResumeSubBlock subBlock) {
         if (subblocks.contains(subBlock)) {
             subblocks.remove(subBlock);
-            subBlock.setBlock(null);
+            subBlock.setBlockId(null);
         }
     }
 
@@ -98,6 +81,18 @@ public class ResumeBlock {
     public void setSubblocks(Set<ResumeSubBlock> subblocks) {
         subblocks.forEach(s -> addSubBlock(s));
     }
+
+
+    public Long getResumeId() {
+        return resumeId;
+    }
+
+
+    public void setResumeId(Long resumeId) {
+        this.resumeId = resumeId;
+    }
+
+    
 
     
     

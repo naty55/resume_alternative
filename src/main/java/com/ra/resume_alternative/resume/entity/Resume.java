@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -17,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ra.resume_alternative.user.User;
 
 
-@Entity(name = "resume")
+@Entity(name="resumes")
 public class Resume {
 
     @Id
@@ -33,13 +35,23 @@ public class Resume {
     private String styleName;
     
 
-    @OneToMany(mappedBy = "resume", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "resumeId")
     private Set<ResumeBlock> blocks = new HashSet<>();
 
-    @OneToMany(mappedBy ="resume", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "resumes_skills", 
+        joinColumns = {@JoinColumn(name="resume_id")},
+        inverseJoinColumns = {@JoinColumn(name="skill_id")}
+        )
     private Set<ResumeSkill> skills = new HashSet<>();
 
-    @OneToMany(mappedBy = "resume", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "resumes_details", 
+        joinColumns = {@JoinColumn(name="resume_id")},
+        inverseJoinColumns = {@JoinColumn(name="detail_id")}
+        )
     private Set<ResumeDetail> details = new HashSet<>();
 
     public Resume() {
@@ -75,12 +87,12 @@ public class Resume {
     }
     public void addBlock(ResumeBlock block) {
         blocks.add(block);
-        block.setResume(this);
+        block.setResumeId(resumeId);
     }
     public void removeBlock(ResumeBlock block) {
         if (blocks.contains(block)) {
             blocks.remove(block);
-            block.setResume(null);
+            block.setResumeId(null);
         }
     }
     public void setBlocks(Set<ResumeBlock> blocks) {
@@ -94,12 +106,12 @@ public class Resume {
     }
     public void addSkill(ResumeSkill skill) {
         skills.add(skill);
-        skill.setResume(this);
+        // skill.getResumes().add(this);
     }
     public void removeSkill(ResumeSkill skill) {
         if(skills.contains(skill)) {
             skills.remove(skill);
-            skill.setResume(null);
+            // skill.getResumes().remove(this);
         }
     }
 
@@ -109,7 +121,10 @@ public class Resume {
     public void setStyleName(String styleName) {
         this.styleName = styleName;
     }
-    
 
-    
+    @Override
+    public String toString() {
+        return "Resume [blocks=" + blocks + ", details=" + details + ", resumeId=" + resumeId + ", skills=" + skills
+                + ", styleName=" + styleName + ", title=" + title + ", user=" + user + "]";
+    }    
 }
