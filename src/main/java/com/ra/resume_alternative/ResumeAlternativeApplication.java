@@ -1,16 +1,14 @@
 package com.ra.resume_alternative;
 
 import java.util.Optional;
-import java.util.Set;
 
 import com.ra.resume_alternative.resume.entity.Resume;
 import com.ra.resume_alternative.resume.entity.ResumeBlock;
 import com.ra.resume_alternative.resume.entity.ResumeSkill;
-import com.ra.resume_alternative.resume.entity.ResumeSubBlock;
 import com.ra.resume_alternative.resume.entity.SkillLevel;
 import com.ra.resume_alternative.resume.entity.SkillType;
 import com.ra.resume_alternative.resume.repository.ResumeRepository;
-import com.ra.resume_alternative.resume.repository.SkillRepository;
+import com.ra.resume_alternative.resume.service.BlockService;
 import com.ra.resume_alternative.resume.service.ResumeService;
 import com.ra.resume_alternative.resume.service.SkillService;
 import com.ra.resume_alternative.user.User;
@@ -33,7 +31,7 @@ public class ResumeAlternativeApplication {
 	}
 
 	@Bean
-	InitializingBean fillDataBase(UserRepository repo,ResumeService resumeService ,ResumeRepository resumeRepo, SkillService skillService, UserService userService) {
+	InitializingBean fillDataBase(UserRepository repo,ResumeService resumeService ,ResumeRepository resumeRepo, SkillService skillService, UserService userService, BlockService blockService) {
 		return () -> {
 			// resumeRepo.deleteAll();
 			repo.deleteAll();
@@ -54,23 +52,21 @@ public class ResumeAlternativeApplication {
 			r1.addSkill(skill2);
 			r1.addSkill(skill3);
 			
-			// r2.addSkill(skill1);
+			r2.addSkill(skill1);
 			r2.addSkill(skill2);
 
-			
-			ResumeBlock block1 = new ResumeBlock();
-			block1.setBlockName("Profile");
-			block1.setResumeId(r1.getResumeId());
-			r1.addBlock(block1);
-			
-			ResumeBlock block2 = new ResumeBlock();
-			block2.setBlockName("Profile");
-			block2.setResumeId(r2.getResumeId());
-			r2.addBlock(block2);
+			ResumeBlock block1 = blockService.addBlock(user.getUserId(), r2.getResumeId(), 1, "Profile");
+			ResumeBlock block2 = blockService.addBlock(user.getUserId(), r2.getResumeId(), 1, "Employment History");
 
 			user.addResume(r1);
 			user.addResume(r2);
 			repo.save(user);
+
+			
+
+			resumeService.deleteResume(user.getUserId(), r2.getResumeId());
+
+			System.out.println(resumeService.getResumeByIdAndUserId(user.getUserId(), r1.getResumeId()));
 		};
 	}
 
