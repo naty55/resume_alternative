@@ -41,7 +41,13 @@ public class SkillService {
 
     @Transactional
     public boolean deleteSkill(Long userId, Long skillId) {
-        skillRepository.deleteBySkillIdAndUserId(skillId, userId);
+        ResumeSkill skill = skillRepository.findById(skillId).orElseThrow(RequestedEntityNotFoundException::new);
+        if(skill.getUserId().equals(userId)) {
+            skillRepository.deleteAllSkillResumeConnections(skillId);
+            skillRepository.deleteBySkillIdAndUserId(skillId, userId);
+        } else {
+            throw new RequestedEntityNotFoundException();
+        }
         return true;
     }
 }
