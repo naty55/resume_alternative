@@ -18,6 +18,9 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ra.resume_alternative.user.User;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 
 @Entity(name="resumes")
 public class Resume {
@@ -35,15 +38,17 @@ public class Resume {
     private String styleName;
     
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "resumeId")
+    @OneToMany(cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "resume")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<ResumeBlock> blocks = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(
         name = "resumes_skills", 
         joinColumns = {@JoinColumn(name="resume_id")},
-        inverseJoinColumns = {@JoinColumn(name="skill_id")}
+        inverseJoinColumns = {@JoinColumn(name="skill_id")} 
         )
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private Set<ResumeSkill> skills = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
@@ -52,6 +57,7 @@ public class Resume {
         joinColumns = {@JoinColumn(name="resume_id")},
         inverseJoinColumns = {@JoinColumn(name="detail_id")}
         )
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private Set<ResumeDetail> details = new HashSet<>();
 
     public Resume() {
@@ -87,12 +93,12 @@ public class Resume {
     }
     public void addBlock(ResumeBlock block) {
         blocks.add(block);
-        block.setResumeId(resumeId);
+        block.setResume(this);
     }
     public void removeBlock(ResumeBlock block) {
         if (blocks.contains(block)) {
             blocks.remove(block);
-            block.setResumeId(null);
+            block.setResume(null);
         }
     }
     public void setBlocks(Set<ResumeBlock> blocks) {
