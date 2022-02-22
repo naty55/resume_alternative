@@ -24,8 +24,7 @@ public class SkillService {
         newSkill.setSkillName(name);
         newSkill.setSkillLevel(skillLevel);
         newSkill.setSkillType(skillType);
-        newSkill = skillRepository.save(newSkill);
-        return newSkill;
+        return skillRepository.save(newSkill);
     }
 
     public ResumeSkill updateSkill(Long userId, Long skillId, Optional<String> newName, Optional<SkillLevel> newLevel) throws RequestedEntityNotFoundException{
@@ -34,8 +33,8 @@ public class SkillService {
             throw new RequestedEntityNotFoundException();
         }
         ResumeSkill skill = retrievedSkill.get();
-        newName.ifPresent(name -> skill.setSkillName(name));
-        newLevel.ifPresent(skillLevel -> skill.setSkillLevel(skillLevel));
+        newName.ifPresent(skill::setSkillName);
+        newLevel.ifPresent(skill::setSkillLevel);
         return skillRepository.save(skill);
     }
 

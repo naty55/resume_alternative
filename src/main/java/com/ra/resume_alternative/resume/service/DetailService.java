@@ -9,6 +9,7 @@ import com.ra.resume_alternative.resume.repository.DetailRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DetailService {
@@ -32,9 +33,16 @@ public class DetailService {
         value.ifPresent(v -> detail.setValue(v));
         return detailRepository.save(detail);
     }
-
+    
+    @Transactional
     public boolean deleteDetail(Long userId, Long detailId) {
-        detailRepository.deleteBySkillIdAndUserId(detailId, userId);
+        ResumeDetail detail = detailRepository.findById(detailId).orElseThrow(RequestedEntityNotFoundException::new);
+        if(detail.getUserId().equals(userId)) {
+            detailRepository.deleteAllDetailResumeConnections(detailId);
+            detailRepository.deleteBySkillIdAndUserId(detailId, userId);   
+        } else {
+            throw new RequestedEntityNotFoundException();
+        }
         return true;
     }
 }
