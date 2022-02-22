@@ -1,16 +1,21 @@
 package com.ra.resume_alternative.resume.entity;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity(name="details")
-// @Table(uniqueConstraints = {@UniqueConstraint(name = "DUC", columnNames = {"value", "detailType", "user_id"})})
+@Table(uniqueConstraints = {@UniqueConstraint(name = "DUC", columnNames = {"value", "detailType", "userId"})})
 public class ResumeDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,6 +26,9 @@ public class ResumeDetail {
     @Column(nullable = false)
     @JsonIgnore
     private Long userId;
+
+    @ManyToMany(mappedBy = "details")
+    private Set<Resume> resumes;
 
     public ResumeDetail() {
 

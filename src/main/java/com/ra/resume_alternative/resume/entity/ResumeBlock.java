@@ -4,13 +4,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 
 
 @Entity(name="blocks")
@@ -21,11 +26,13 @@ public class ResumeBlock {
     private Integer blockOrder;
     private String blockName;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy ="blockId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "block")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     Set<ResumeSubBlock> subblocks = new HashSet<>();
 
-    @Column(nullable = false)
-    private Long resumeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resume_id")
+    private Resume resume;
 
     public ResumeBlock() {}
 
@@ -53,12 +60,12 @@ public class ResumeBlock {
 
     public void addSubBlock(ResumeSubBlock subBlock) {
         subblocks.add(subBlock);
-        subBlock.setBlockId(blockId);
+        subBlock.setBlock(this);
     }
     public void removeSubBlock(ResumeSubBlock subBlock) {
         if (subblocks.contains(subBlock)) {
             subblocks.remove(subBlock);
-            subBlock.setBlockId(null);
+            subBlock.setBlock(null);
         }
     }
 
@@ -84,12 +91,29 @@ public class ResumeBlock {
 
 
     public Long getResumeId() {
-        return resumeId;
+        if(resume != null){
+            return resume.getResumeId();
+        }
+        return null;
+    }
+
+    public Resume getResume() {
+        return resume;
     }
 
 
-    public void setResumeId(Long resumeId) {
-        this.resumeId = resumeId;
+    public void setResume(Resume resume) {
+        if(this.resume != null) {
+            resume.removeBlock(this);
+        }
+        this.resume = resume;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ResumeBlock [blockId=" + blockId + ", blockName=" + blockName + ", blockOrder=" + blockOrder
+                + ", resumeId=" + getResumeId() + ", subblocks=" + subblocks + "]";
     }
 
     

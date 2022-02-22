@@ -1,11 +1,14 @@
 package com.ra.resume_alternative.resume.entity;
 
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -24,6 +27,9 @@ public class ResumeSkill {
     @Column(nullable = false)
     @JsonIgnore
     private Long userId;
+
+    @ManyToMany(mappedBy = "skills")
+    private Set<Resume> resumes;
 
     public ResumeSkill() {
 
