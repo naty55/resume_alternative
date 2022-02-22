@@ -2,11 +2,13 @@ package com.ra.resume_alternative.resume.entity;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 
 @Entity(name = "subblocks")
@@ -19,18 +21,19 @@ public class ResumeSubBlock {
     private Date startTime;
     private Date endTime;
 
-    @Column(nullable = false)
-    private Long blockId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "block_id")
+    private ResumeBlock block;
 
 
     public Long getSubblockId() {
         return subblockId;
     }
     public Long getBlockId() {
-        return blockId;
+        return block.getBlockId();
     }
-    public void setBlockId(Long blockId) {
-        this.blockId = blockId;
+    public void setBlock(ResumeBlock block) {
+        this.block = block;
     }
     public void setSubblockId(Long subblockId) {
         this.subblockId = subblockId;
