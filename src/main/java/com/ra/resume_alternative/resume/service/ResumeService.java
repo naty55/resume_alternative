@@ -13,6 +13,7 @@ import com.ra.resume_alternative.user.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ResumeService {
@@ -22,6 +23,7 @@ public class ResumeService {
 
     @Autowired
     ResumeRepository resumeRepository;
+    
 
     public List<Map<String,String>> getResumesNamesByUser(User user, Long page) {
         List<Map<String, String>> rv = new ArrayList<>();
@@ -50,30 +52,64 @@ public class ResumeService {
         return resumeRepository.save(resume);
     }
 
+    @Transactional
     public boolean deleteResume(Long userId, Long resumeId) {
+        checkForResumeByResumeIdAndUserId(resumeId, userId);
         resumeRepository.deleteResumeByResumeIdAndUserId(resumeId, userId);
         return true;
     }
 
+    @Transactional
     public Resume updateResume(Long userId, Long resumeId, Optional<String> title, Optional<String> stylename) {
-        Optional<Resume> retrievedResume = resumeRepository.findByResumeIdAndUserId(resumeId, userId);
-        if(retrievedResume.isEmpty()) {
-            throw new RequestedEntityNotFoundException();
-        }
-        Resume resume = retrievedResume.get();
-        title.ifPresent(t -> resume.setTitle(t));
-        stylename.ifPresent(s -> resume.setStyleName(s));
-        return resumeRepository.save(resume);
+        checkForResumeByResumeIdAndUserId(resumeId, userId);
+        title.ifPresent(t -> resumeRepository.updateResumeTitleByResumeIdAndUserId(resumeId, userId, t));
+        stylename.ifPresent(s -> resumeRepository.updateResumeStylenameByResumeIdAndUserId(resumeId, userId, s));
+        return getResumeByIdAndUserId(userId, resumeId);
     }
 
+    @Transactional
     public boolean addSkillToResume(Long userId, Long resumeId, Long skillId) {
+        checkForResumeByResumeIdAndUserId(resumeId, userId);
         resumeRepository.addSkillToResume(resumeId, skillId);
         return true;
     }
 
+    @Transactional
     public boolean removeSkillFromResume(Long userId, Long resumeId, Long skillId) {
+        checkForResumeByResumeIdAndUserId(resumeId, userId);
         resumeRepository.deleteSkillFromResume(resumeId, skillId);
         return true;
+    }
+    @Transactional
+    public boolean addSDetailToResume(Long userId, Long resumeId, Long detailId) {
+        checkForResumeByResumeIdAndUserId(resumeId, userId);
+        resumeRepository.addDetailToResume(resumeId, detailId);
+        return true;
+    }
+    
+    @Transactional
+    public boolean removeDetailFromResume(Long userId, Long resumeId, Long detailId) {
+        checkForResumeByResumeIdAndUserId(resumeId, userId);
+        resumeRepository.deleteDetailFromResume(resumeId, detailId);
+        return true;
+    }
+
+    /**
+     * Check if resume exists in DB, if yes return True otherwise return False
+     */
+    public boolean isResumeExistsByResumeIdAndUserId(Long resumeId, Long userId) {
+        return resumeRepository.isExistByREsumeIdAndUserId(resumeId, userId) == 1;
+    }
+
+    /**
+     * Check if resume exists in DB otherwise throw an exception.
+     * if Resume is not in DB {@link RequestedEntityNotFoundException} is thrown
+     * @return void
+     */
+    public void checkForResumeByResumeIdAndUserId(Long resumeId, Long userId) throws RequestedEntityNotFoundException {
+        if(!isResumeExistsByResumeIdAndUserId(resumeId, userId)) {
+            throw new RequestedEntityNotFoundException();
+        }
     }
     
 }
