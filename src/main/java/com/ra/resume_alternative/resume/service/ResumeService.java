@@ -8,7 +8,9 @@ import java.util.Optional;
 
 import com.ra.resume_alternative.resume.entity.Resume;
 import com.ra.resume_alternative.resume.error.RequestedEntityNotFoundException;
+import com.ra.resume_alternative.resume.repository.DetailRepository;
 import com.ra.resume_alternative.resume.repository.ResumeRepository;
+import com.ra.resume_alternative.resume.repository.SkillRepository;
 import com.ra.resume_alternative.user.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,12 @@ public class ResumeService {
 
     @Autowired
     ResumeRepository resumeRepository;
+
+    @Autowired
+    SkillRepository skillRepository;
+
+    @Autowired 
+    DetailRepository detailRepository;
     
 
     public List<Map<String,String>> getResumesNamesByUser(User user, Long page) {
@@ -70,6 +78,7 @@ public class ResumeService {
     @Transactional
     public boolean addSkillToResume(Long userId, Long resumeId, Long skillId) {
         checkForResumeByResumeIdAndUserId(resumeId, userId);
+        checkForSkillBySkillIdAndUserId(skillId, userId);
         resumeRepository.addSkillToResume(resumeId, skillId);
         return true;
     }
@@ -77,12 +86,14 @@ public class ResumeService {
     @Transactional
     public boolean removeSkillFromResume(Long userId, Long resumeId, Long skillId) {
         checkForResumeByResumeIdAndUserId(resumeId, userId);
+        checkForSkillBySkillIdAndUserId(skillId, userId);
         resumeRepository.deleteSkillFromResume(resumeId, skillId);
         return true;
     }
     @Transactional
     public boolean addSDetailToResume(Long userId, Long resumeId, Long detailId) {
         checkForResumeByResumeIdAndUserId(resumeId, userId);
+        checkForDetailByDetailIdAndUserId(detailId, userId);
         resumeRepository.addDetailToResume(resumeId, detailId);
         return true;
     }
@@ -90,6 +101,7 @@ public class ResumeService {
     @Transactional
     public boolean removeDetailFromResume(Long userId, Long resumeId, Long detailId) {
         checkForResumeByResumeIdAndUserId(resumeId, userId);
+        checkForDetailByDetailIdAndUserId(detailId, userId);
         resumeRepository.deleteDetailFromResume(resumeId, detailId);
         return true;
     }
@@ -111,5 +123,16 @@ public class ResumeService {
             throw new RequestedEntityNotFoundException();
         }
     }
+
+    private void checkForSkillBySkillIdAndUserId(Long skillId, Long userId) {
+        if(skillRepository.isSkillExistsBySkillIdAndUserId(userId, skillId) != 1) {
+            throw new RequestedEntityNotFoundException();
+        }
+    }
     
+    private void checkForDetailByDetailIdAndUserId(Long detailId, Long userId) {
+        if(skillRepository.isSkillExistsBySkillIdAndUserId(userId, detailId) != 1) {
+            throw new RequestedEntityNotFoundException();
+        }
+    }
 }
