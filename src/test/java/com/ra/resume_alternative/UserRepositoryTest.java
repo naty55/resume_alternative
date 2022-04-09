@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -36,4 +37,22 @@ public class UserRepositoryTest {
         assertThat(savedUser.isVerfiedEmail()).isEqualTo(existUser.isVerfiedEmail());
     }
     
+    @Test
+    void testDeleteUserById() throws ParseException {
+        User user = new User("test_user", "test_email", "12345678", "01/01/2020", "ROLE_USER", true);
+        User savedUser = usersRepo.save(user);
+        usersRepo.deleteById(savedUser.getUserId());
+        assertNull(usersRepo.findByEmail(savedUser.getEmail()).orElse(null));
+        assertNull(usersRepo.findById(savedUser.getUserId()).orElse(null));
+    }
+
+    
+    @Test
+    void testDeleteUser() throws ParseException {
+        User user = new User("test_user", "test_email", "12345678", "01/01/2020", "ROLE_USER", true);
+        User savedUser = usersRepo.save(user);
+        usersRepo.delete(savedUser);
+        assertNull(usersRepo.findByEmail(savedUser.getEmail()).orElse(null));
+        assertNull(usersRepo.findById(savedUser.getUserId()).orElse(null));
+    }
 }
