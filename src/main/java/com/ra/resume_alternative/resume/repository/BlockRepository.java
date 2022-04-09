@@ -22,4 +22,17 @@ public interface BlockRepository extends JpaRepository<ResumeBlock, Long> {
     @Query(value = "delete from blocks where resume_id=:resumeId", nativeQuery = true)
     void deleteAllBlocksByResumeId(Long resumeId);
 
+    @Modifying
+    @Query("update blocks b set b.blockName=:blockName where b.blockId=:blockId")
+    void updateBlockNameByBlockId(Long blockId, String blockName);
+
+    
+    @Modifying
+    @Query("update blocks b set b.blockOrder=:blockOrder where b.blockId=:blockId")
+    void updateBlockOrderByBlockId(Long blockId, Integer blockOrder);
+
+    
+    @Query(value = "select exists(select 1 from blocks inner join users on blocks.block_id=:blockId and users.user_id=:userId limit 1)", nativeQuery = true)
+    int isExistByREsumeIdAndUserId(Long blockId, Long userId);
+
 }
