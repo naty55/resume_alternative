@@ -44,7 +44,7 @@ public class User {
     @OneToMany(orphanRemoval = true, mappedBy="userId", fetch = FetchType.LAZY)
     Set<ResumeDetail> details = new HashSet<>();
     
-    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     Set<Resume> resumes = new HashSet<>();
 
 
