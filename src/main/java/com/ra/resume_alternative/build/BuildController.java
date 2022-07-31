@@ -1,7 +1,7 @@
 package com.ra.resume_alternative.build;
 
 import com.ra.resume_alternative.resume.entity.Resume;
-import com.ra.resume_alternative.resume.error.RequestedEntityNotFoundException;
+import com.ra.resume_alternative.error.RequestedEntityNotFoundException;
 import com.ra.resume_alternative.resume.service.ResumeService;
 import com.ra.resume_alternative.user.User;
 import com.ra.resume_alternative.user.UserService;
@@ -37,7 +37,6 @@ public class BuildController {
             Resume resume = resumeService.getResumeByIdAndUserId(user.getUserId(), resumeIdentifier);
             model.addAttribute("resume", resume);
         } catch(RequestedEntityNotFoundException e) {
-            // Do nothing   
         }
         return "build";
     }
