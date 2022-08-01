@@ -30,7 +30,7 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
     Optional<Resume> findByResumeIdAndUserId(Long resumeId, Long userId);
 
     @Modifying
-    @Query("delete from resumes r where r.resumeId=?1 and r.user.userId=?2")
+    @Query("delete from resumes r where r.resumeId=:resumeId and r.user.userId=:userId")
     void deleteResumeByResumeIdAndUserId(Long resumeId, Long userId);
 
     @Modifying
