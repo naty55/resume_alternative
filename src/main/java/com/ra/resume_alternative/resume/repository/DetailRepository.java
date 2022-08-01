@@ -8,7 +8,6 @@ import com.ra.resume_alternative.resume.entity.ResumeDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface DetailRepository extends JpaRepository<ResumeDetail, Long> {
 
