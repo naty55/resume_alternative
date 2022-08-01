@@ -24,18 +24,18 @@ public class AuthController {
     @Autowired
     SecurityService securityService;
     
-    @GetMapping("/login")
+    @GetMapping("login")
     String login(Model model, Authentication auth) {
         return securityService.isAuthenticatedAndViewName(auth, "/", "login");
     }
 
-    @GetMapping("/signup")
+    @GetMapping("signup")
     String signup(Model model, Authentication auth) {
         model.addAttribute("user", new User());
         return securityService.isAuthenticatedAndViewName(auth, "/", "signup");
     }
 
-    @PostMapping("/signup")
+    @PostMapping("signup")
     String signup(Model model, User user) {
         user = userService.createUser(user);
         Authentication auth = securityService.autoLogin(user);
