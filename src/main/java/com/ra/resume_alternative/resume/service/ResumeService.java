@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.ra.resume_alternative.resume.entity.Resume;
-import com.ra.resume_alternative.resume.error.RequestedEntityNotFoundException;
+import com.ra.resume_alternative.error.RequestedEntityNotFoundException;
 import com.ra.resume_alternative.resume.repository.DetailRepository;
 import com.ra.resume_alternative.resume.repository.ResumeRepository;
 import com.ra.resume_alternative.resume.repository.SkillRepository;
@@ -29,13 +29,20 @@ public class ResumeService {
     @Autowired
     SkillRepository skillRepository;
 
+    @Autowired
+    SkillService skillService;
+
+    @Autowired
+    DetailService detailService;
+
+
     @Autowired 
     DetailRepository detailRepository;
     
 
     public List<Map<String,String>> getResumesNamesByUser(User user, Long page) {
         List<Map<String, String>> rv = new ArrayList<>();
-        for (Resume r: resumeRepository.findByUser(user)) {
+        for (Resume r: resumeRepository.findByUserId(user.getUserId())) {
             Map<String, String> map = new HashMap<>();
             map.put("title", r.getTitle());
             map.put("id", String.valueOf(r.getResumeId()));
@@ -56,7 +63,7 @@ public class ResumeService {
         Resume resume = new Resume();
         resume.setStyleName(stylename.orElse(DEFAULT_RESUME_STYLE));
         resume.setTitle(title.orElse(DEFAULT_RESUME_TITLE));
-        resume.setUser(user);
+        resume.setUserId(user.getUserId());
         return resumeRepository.save(resume);
     }
 
@@ -74,7 +81,15 @@ public class ResumeService {
         stylename.ifPresent(s -> resumeRepository.updateResumeStylenameByResumeIdAndUserId(resumeId, userId, s));
         return getResumeByIdAndUserId(userId, resumeId);
     }
-
+    @Transactional 
+    public Resume update(User user, Resume resume) {
+        resume.setUserId(user.getUserId());
+        checkForResumeByResumeIdAndUserId(resume.getResumeId(), resume.getUserId());
+        resume.setSkills(skillService.updateOrCreate(resume.getSkills(), user.getUserId()));
+        resume.setDetails(detailService.updateOrCreate(resume.getDetails(), user.getUserId()));
+        Resume saved = resumeRepository.save(resume);
+        return saved;
+    }
     @Transactional
     public boolean addSkillToResume(Long userId, Long resumeId, Long skillId) {
         checkForResumeByResumeIdAndUserId(resumeId, userId);
