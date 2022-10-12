@@ -1,5 +1,6 @@
 package com.ra.resume_alternative.resume.entity;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,10 +15,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ra.resume_alternative.user.User;
 
 
@@ -31,13 +35,17 @@ public class Resume {
     @JoinColumn(name = "user_id", nullable = false)
     @Column(nullable = false)
     private Long userId;
-
     private String title;
+    @ColumnDefault("default")
     private String styleName;
     
+    @JsonIgnore
+    private LocalDateTime lastTimeAccessed;
+    
 
-    @OneToMany(cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "resume")
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "resume")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @OrderBy("blockOrder")
     private Set<ResumeBlock> blocks = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
