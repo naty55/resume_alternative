@@ -13,8 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 
@@ -23,6 +26,7 @@ public class ResumeBlock {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long blockId;
+    @Check(constraints = "blockOrder > 0")
     private Integer blockOrder;
     private String blockName;
 
@@ -32,6 +36,7 @@ public class ResumeBlock {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resume_id")
+    @JsonIgnore
     private Resume resume;
 
     public ResumeBlock() {}

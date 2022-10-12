@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity(name = "subblocks")
 public class ResumeSubBlock {
@@ -23,6 +25,7 @@ public class ResumeSubBlock {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "block_id")
+    @JsonIgnore
     private ResumeBlock block;
 
 
