@@ -34,10 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
+		http.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/*", "/js/*","/css/*", "/auth/**").permitAll()
-			.antMatchers("/build/**", "/user/**").hasAnyRole("USER", "ADMIN")
+			.antMatchers("/*", "/js/*","/css/*", "/auth/**", "/api/**").permitAll()
+			.antMatchers("/build/**", "/user/**", "/api/**").hasAnyRole("USER", "ADMIN")
 			.anyRequest().authenticated()
 			.and()
 			.formLogin()
@@ -50,11 +50,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.deleteCookies("JSESSIONID", "ra_id");
 	}
 
-	
-	@Bean
-	public PasswordEncoder getPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+
+    @Bean
+    PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 	
 
 	
