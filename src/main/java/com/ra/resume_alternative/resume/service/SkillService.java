@@ -1,11 +1,13 @@
 package com.ra.resume_alternative.resume.service;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import com.ra.resume_alternative.resume.entity.ResumeSkill;
 import com.ra.resume_alternative.resume.entity.SkillLevel;
 import com.ra.resume_alternative.resume.entity.SkillType;
-import com.ra.resume_alternative.resume.error.RequestedEntityNotFoundException;
+import com.ra.resume_alternative.error.RequestedEntityNotFoundException;
 import com.ra.resume_alternative.resume.repository.SkillRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,16 @@ public class SkillService {
         newSkill.setSkillName(name);
         newSkill.setSkillLevel(skillLevel);
         newSkill.setSkillType(skillType);
-        return skillRepository.save(newSkill);
+        newSkill.setUserId(userId);
+        return addSkill(newSkill);
+    }
+    @Transactional
+    public ResumeSkill addSkill(ResumeSkill skill) {
+        Optional<ResumeSkill> s = skillRepository.findBySkillNameAndSkillTypeAndUserId(skill.getSkillName(), skill.getSkillType(), skill.getUserId());
+        if (s.isPresent()) {
+            return s.get();
+        }
+        return skillRepository.save(skill);
     }
 
     public ResumeSkill updateSkill(Long userId, Long skillId, Optional<String> newName, Optional<SkillLevel> newLevel) throws RequestedEntityNotFoundException{
@@ -38,11 +49,28 @@ public class SkillService {
         return skillRepository.save(skill);
     }
 
+    public Set<ResumeSkill> updateOrCreate(Set<ResumeSkill> skills, Long userId) {
+        if(skills == null) {
+            return null;
+        }
+        Set<ResumeSkill> persistedSkills = new HashSet<>();
+        for (ResumeSkill skill: skills) {
+            skill.setUserId(userId);
+            ResumeSkill s = null;
+            if(skill.getSkillId() != null) { // Update
+                    s = updateSkill(userId, skill.getSkillId(), Optional.of(skill.getSkillName()), Optional.of(skill.getSkillLevel()));
+                } else {
+                    s = addSkill(skill);
+                }
+            persistedSkills.add(s);
+        }
+        return persistedSkills;
+    }
+
     @Transactional
     public boolean deleteSkill(Long userId, Long skillId) {
         ResumeSkill skill = skillRepository.findById(skillId).orElseThrow(RequestedEntityNotFoundException::new);
         if(skill.getUserId().equals(userId)) {
-            skillRepository.deleteAllSkillResumeConnections(skillId);
             skillRepository.deleteBySkillIdAndUserId(skillId, userId);
         } else {
             throw new RequestedEntityNotFoundException();
