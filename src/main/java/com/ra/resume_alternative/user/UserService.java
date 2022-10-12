@@ -2,6 +2,9 @@ package com.ra.resume_alternative.user;
 
 
 import java.util.Calendar;
+import java.util.NoSuchElementException;
+
+import com.ra.resume_alternative.error.RequestedEntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,7 +22,11 @@ public class UserService {
     UserRepository userRepository;
 
     User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).get();
+        try {
+            return userRepository.findByEmail(email).get();
+        } catch(NoSuchElementException e) {
+            throw new RequestedEntityNotFoundException();
+        }
     }
 
     public void putUserAsModel(Model model, Authentication auth) {
