@@ -1,45 +1,69 @@
-package com.ra.resume_alternative.resume;
+package com.ra.resume_alternative.resume.entity;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ra.resume_alternative.user.User;
 
 
-@Entity(name = "resume")
+@Entity(name="resumes")
 public class Resume {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long resumeId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonIgnore
-    private User user;
-
+    @JoinColumn(name = "user_id", nullable = false)
+    @Column(nullable = false)
+    private Long userId;
     private String title;
+    @ColumnDefault("default")
     private String styleName;
     
+    @JsonIgnore
+    private LocalDateTime lastTimeAccessed;
+    
 
-    @OneToMany(mappedBy = "resume", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "resume")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OrderBy("blockOrder")
     private Set<ResumeBlock> blocks = new HashSet<>();
 
-    @OneToMany(mappedBy ="resume", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "resumes_skills", 
+        joinColumns = {@JoinColumn(name="resume_id")},
+        inverseJoinColumns = {@JoinColumn(name="skill_id")} 
+        )
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private Set<ResumeSkill> skills = new HashSet<>();
 
-    @OneToMany(mappedBy = "resume", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "resumes_details", 
+        joinColumns = {@JoinColumn(name="resume_id")},
+        inverseJoinColumns = {@JoinColumn(name="detail_id")}
+        )
+    @OnDelete(action=OnDeleteAction.CASCADE)
     private Set<ResumeDetail> details = new HashSet<>();
 
     public Resume() {
@@ -47,7 +71,7 @@ public class Resume {
     }
 
     public Resume(User user,String title, Set<ResumeBlock> blocks, Set<ResumeSkill> skills) {
-        this.user = user;
+        this.userId = user.getUserId();
         this.title = title;
         setBlocks(blocks);
         setSkills(skills);
@@ -58,11 +82,11 @@ public class Resume {
     public void setResumeId(Long resumeId) {
         this.resumeId = resumeId;
     }
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
     public String getTitle() {
         return title;
@@ -90,17 +114,26 @@ public class Resume {
         return skills;
     }
     public void setSkills(Set<ResumeSkill> skills) {
+        this.skills.clear();
         skills.forEach(s -> this.addSkill(s));
     }
     public void addSkill(ResumeSkill skill) {
         skills.add(skill);
-        skill.setResume(this);
+        skill.setUserId(this.userId);
     }
     public void removeSkill(ResumeSkill skill) {
         if(skills.contains(skill)) {
             skills.remove(skill);
-            skill.setResume(null);
         }
+    }
+
+    public void setDetails(Set<ResumeDetail> details) {
+        this.details.clear();
+        details.forEach(d -> addDetail(d));
+    }
+    public void addDetail(ResumeDetail d) {
+        details.add(d);
+        d.setUserId(this.userId);
     }
 
     public String getStyleName() {
@@ -109,7 +142,14 @@ public class Resume {
     public void setStyleName(String styleName) {
         this.styleName = styleName;
     }
-    
 
-    
+    public Set<ResumeDetail> getDetails() {
+        return details;
+    }
+
+    @Override
+    public String toString() {
+        return "Resume [blocks=" + blocks + ", details=" + details + ", resumeId=" + resumeId + ", skills=" + skills
+                + ", styleName=" + styleName + ", title=" + title + ", user=" + userId + "]";
+    }    
 }

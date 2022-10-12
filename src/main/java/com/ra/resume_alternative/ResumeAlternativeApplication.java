@@ -1,61 +1,53 @@
 package com.ra.resume_alternative;
 
-import java.util.Set;
-
-import com.ra.resume_alternative.resume.Resume;
-import com.ra.resume_alternative.resume.ResumeBlock;
-import com.ra.resume_alternative.resume.ResumeRepository;
-import com.ra.resume_alternative.resume.ResumeSkill;
-import com.ra.resume_alternative.resume.SkillType;
-import com.ra.resume_alternative.user.User;
-import com.ra.resume_alternative.user.UserRepository;
-
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.ra.resume_alternative.resume.entity.ResumeSkill;
+import com.ra.resume_alternative.resume.entity.SkillLevel;
+import com.ra.resume_alternative.resume.entity.SkillType;
+import com.ra.resume_alternative.resume.repository.ResumeRepository;
+import com.ra.resume_alternative.resume.repository.SkillRepository;
+import com.ra.resume_alternative.resume.service.BlockService;
+import com.ra.resume_alternative.resume.service.ResumeService;
+import com.ra.resume_alternative.resume.service.SkillService;
+import com.ra.resume_alternative.user.User;
+import com.ra.resume_alternative.user.UserRepository;
+import com.ra.resume_alternative.user.UserService;
+
 
 
 @SpringBootApplication
 public class ResumeAlternativeApplication {
 
-	@Autowired
-	PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ResumeAlternativeApplication.class, args);
 	}
 
 	@Bean
-	InitializingBean fillDataBase(UserRepository repo, ResumeRepository resumeRepo) {
+	InitializingBean fillDataBase(UserRepository repo,ResumeService resumeService ,ResumeRepository resumeRepo, SkillService skillService,SkillRepository skillRepository, UserService userService, BlockService blockService) {
 		return () -> {
-			resumeRepo.deleteAll();
-			repo.deleteAll();
-			User user = new User("Naty", "naty@gmail.com", passwordEncoder.encode("12345678"), "11/11/1998", "ROLE_USER");
-			System.out.println(user);
-			repo.save(user);
-			System.out.println(user);
-			resumeRepo.save(new Resume(user, "untitled", Set.of(new ResumeBlock()), Set.of(new ResumeSkill("English", 4, SkillType.Language))));
-			repo.save(user);
+			try {
+			// User user = new User();
+			// user.setFirstName("Naty");
+			// user.setLastName("Mina");
+			// user.setEmail("naty@gmail.com");
+			// user.setPassword("12345678");
+			// user.setUsername("naty55");
+			// user.setVerfiedEmail(true);
+			User user = repo.getById(1L);
+			ResumeSkill skill1 = skillService.addSkill(user.getUserId(), "English", SkillType.Language, SkillLevel.D);
+			skillService.addSkill(skill1);
+			ResumeSkill skill2 = skillService.addSkill(user.getUserId(), "Python", SkillType.Technology, SkillLevel.A);
+			ResumeSkill skill3 = skillService.addSkill(user.getUserId(), "Java", SkillType.Technology, SkillLevel.A);
+			skillService.deleteSkill(user.getUserId(), skill1.getSkillId());
+			} catch(Exception e) {
+				System.out.println("Fill DB didn't finish");
+			}
 		};
-	}
-
-	@Bean
-	InitializingBean printAllBeans(org.springframework.context.ApplicationContext ctx) {
-		return () -> {
-			System.out.println("Beans that had been initialized on stratup\n" +
-			"===================================\n");
-			// Arrays.stream(ctx.getBeanDefinitionNames()).sorted().forEach(System.out::println);
-		};
-	}
-
-	
-	@Bean
-	public PasswordEncoder getPasswordEncoder() {
-		return new BCryptPasswordEncoder();
 	}
 
 }

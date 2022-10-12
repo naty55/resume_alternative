@@ -1,0 +1,9 @@
+version: '3.0'
+services:
+  ms-database:
+    image: 'mysql'
+  web-app:
+    image: 'ra-app:1.0'  
+    ports:
+      -8080:8080
+    

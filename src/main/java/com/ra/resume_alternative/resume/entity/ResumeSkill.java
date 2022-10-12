@@ -1,36 +1,41 @@
-package com.ra.resume_alternative.resume;
+package com.ra.resume_alternative.resume.entity;
 
+
+import java.util.Set;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-@Entity(name = "skills")
+@Table(uniqueConstraints = {@UniqueConstraint(name="TNU", columnNames = {"skillName", "skillType", "userId"})})
+@Entity(name="skills")
 public class ResumeSkill {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long skillId;
     private String skillName;
-    private Integer skillLevel;
+    private SkillLevel skillLevel;
     private SkillType skillType;
-    
 
-    @ManyToOne
-    @JoinColumn(name = "resume_id")
-    @JsonIgnore
-    Resume resume;
+    @Column(nullable = false)
+    private Long userId;
+
+    @ManyToMany(mappedBy = "skills")
+    private Set<Resume> resumes;
 
     public ResumeSkill() {
 
     }
     
-    public ResumeSkill(String skillName, Integer level, SkillType skillType) {
+
+    public ResumeSkill(String skillName, SkillLevel skillLevel, SkillType skillType) {
         setSkillName(skillName);
-        setSkillId(skillId); 
+        setSkillLevel(skillLevel);
         setSkillType(skillType);
     }
 
@@ -50,20 +55,12 @@ public class ResumeSkill {
         this.skillName = skillName.toLowerCase();
     }
 
-    public Integer getSkillLevel() {
+    public SkillLevel getSkillLevel() {
         return skillLevel;
     }
 
-    public void setSkillLevel(Integer skillLevel) {
+    public void setSkillLevel(SkillLevel skillLevel) {
         this.skillLevel = skillLevel;
-    }
-
-    public Resume getResume() {
-        return resume;
-    }
-
-    public void setResume(Resume resume) {
-        this.resume = resume;
     }
 
     public void setSkillType(SkillType skillType) {
@@ -73,9 +70,19 @@ public class ResumeSkill {
         return skillType;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+
+
     @Override
     public String toString() {
-        return "ResumeSkill [resume=" + resume + ", skillId=" + skillId + ", skillLevel=" + skillLevel + ", skillName="
+        return "ResumeSkill [skillId=" + skillId + ", skillLevel=" + skillLevel + ", skillName="
                 + skillName + ", skillType=" + skillType + "]";
     }
 
@@ -84,3 +91,6 @@ public class ResumeSkill {
     
 
 }
+
+
+

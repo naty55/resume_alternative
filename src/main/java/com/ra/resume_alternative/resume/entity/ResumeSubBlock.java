@@ -1,8 +1,9 @@
-package com.ra.resume_alternative.resume;
+package com.ra.resume_alternative.resume.entity;
 
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,7 +13,7 @@ import javax.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
-@Entity(name = "subblock")
+@Entity(name = "subblocks")
 public class ResumeSubBlock {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,13 +23,20 @@ public class ResumeSubBlock {
     private Date startTime;
     private Date endTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "block_id")
     @JsonIgnore
     private ResumeBlock block;
 
+
     public Long getSubblockId() {
         return subblockId;
+    }
+    public Long getBlockId() {
+        return block.getBlockId();
+    }
+    public void setBlock(ResumeBlock block) {
+        this.block = block;
     }
     public void setSubblockId(Long subblockId) {
         this.subblockId = subblockId;
@@ -38,12 +46,6 @@ public class ResumeSubBlock {
     }
     public void setContent(String content) {
         this.content = content;
-    }
-    public ResumeBlock getBlock() {
-        return block;
-    }
-    public void setBlock(ResumeBlock block) {
-        this.block = block;
     }
     public String getSubblockTitle() {
         return subblockTitle;

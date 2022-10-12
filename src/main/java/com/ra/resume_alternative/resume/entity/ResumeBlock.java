@@ -1,4 +1,4 @@
-package com.ra.resume_alternative.resume;
+package com.ra.resume_alternative.resume.entity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,32 +13,33 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Check;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.hibernate.annotations.Cascade;
 
 
-@Entity(name = "blocks")
+@Entity(name="blocks")
 public class ResumeBlock {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long blockId;
+    @Check(constraints = "blockOrder > 0")
     private Integer blockOrder;
     private String blockName;
-    
-    @ManyToOne
-    @JoinColumn(name = "resume_id")
-    @JsonIgnore
-    Resume resume;
 
-    @OneToMany(mappedBy = "block", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "block")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     Set<ResumeSubBlock> subblocks = new HashSet<>();
 
-    public ResumeBlock() {
-        blockOrder = 1;
-        blockName = "Profile";
-        addSubBlock(new ResumeSubBlock());
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resume_id")
+    @JsonIgnore
+    private Resume resume;
+
+    public ResumeBlock() {}
 
 
     public Long getBlockId() {
@@ -60,14 +61,7 @@ public class ResumeBlock {
         this.blockOrder = blockOrder;
     }
 
-    public Resume getResume() {
-        return resume;
-    }
 
-
-    public void setResume(Resume resume) {
-        this.resume = resume;
-    }
 
     public void addSubBlock(ResumeSubBlock subBlock) {
         subblocks.add(subBlock);
@@ -99,6 +93,35 @@ public class ResumeBlock {
     public void setSubblocks(Set<ResumeSubBlock> subblocks) {
         subblocks.forEach(s -> addSubBlock(s));
     }
+
+
+    public Long getResumeId() {
+        if(resume != null){
+            return resume.getResumeId();
+        }
+        return null;
+    }
+
+    public Resume getResume() {
+        return resume;
+    }
+
+
+    public void setResume(Resume resume) {
+        if(this.resume != null) {
+            resume.removeBlock(this);
+        }
+        this.resume = resume;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ResumeBlock [blockId=" + blockId + ", blockName=" + blockName + ", blockOrder=" + blockOrder
+                + ", resumeId=" + getResumeId() + ", subblocks=" + subblocks + "]";
+    }
+
+    
 
     
     

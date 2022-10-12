@@ -1,15 +1,19 @@
-package com.ra.resume_alternative.resume;
+package com.ra.resume_alternative.resume.entity;
 
+import java.util.Set;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity(name = "resume_details")
+@Entity(name="details")
+@Table(uniqueConstraints = {@UniqueConstraint(name = "DUC", columnNames = {"value", "detailType", "userId"})})
 public class ResumeDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,13 +21,23 @@ public class ResumeDetail {
     private String value;
     private DetailType detailType;
 
-    @ManyToOne
-    @JoinColumn(name = "resume_id")
-    @JsonIgnore
-    private Resume resume;
+    @Column(nullable = false)
+    private Long userId;
+
+    @ManyToMany(mappedBy = "details")
+    private Set<Resume> resumes;
 
     public ResumeDetail() {
 
+    }
+    public Long getDetailId() {
+        return detailId;
+    }
+    public Long getUserId() {
+        return userId;
+    }
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
     public ResumeDetail(String value, DetailType detailType) {
         this.value = value;
@@ -41,12 +55,4 @@ public class ResumeDetail {
     public void setDetailType(DetailType detailType) {
         this.detailType = detailType;
     }
-    public Resume getResume() {
-        return resume;
-    }
-    public void setResume(Resume resume) {
-        this.resume = resume;
-    }
-    
-
 }

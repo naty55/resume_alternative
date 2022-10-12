@@ -13,9 +13,16 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import com.ra.resume_alternative.resume.Resume;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.ra.resume_alternative.resume.entity.Resume;
+import com.ra.resume_alternative.resume.entity.ResumeDetail;
+import com.ra.resume_alternative.resume.entity.ResumeSkill;
+
 
 
 
@@ -35,8 +42,19 @@ public class User {
     private Date created;
     private String roles;
     private boolean verfiedEmail;
+
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "userId")
+    Set<ResumeSkill> skills = new HashSet<>();
     
-    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "userId")
+    Set<ResumeDetail> details = new HashSet<>();
+    
+    @OneToMany(mappedBy = "userId", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OnDelete(action=OnDeleteAction.CASCADE)
     Set<Resume> resumes = new HashSet<>();
 
 
@@ -49,6 +67,8 @@ public class User {
         this.roles = roles;
         this.verfiedEmail = verfiedEmail;
     }
+
+    public User() {}
 
     public User(String name, String email, String password, String date, String roles) throws ParseException {
         this(name, email, password, date, roles, true);
@@ -72,7 +92,6 @@ public class User {
     public void setCreated(Date created) {
         this.created = created;
     }
-    public User() {}
 
     public Long getUserId() {
         return userId;
@@ -101,16 +120,25 @@ public class User {
     }
     public void addResume(Resume resume) {
         this.resumes.add(resume);
-        resume.setUser(this);
+        // resume.setUser(this);
     }
     public void removeResume(Resume resume) {
         if(resumes.contains(resume)) {
             resumes.remove(resume);
-            resume.setUser(null);
+            // resume.setUser(null);
         }
     }
 
+    public void addDetail(ResumeDetail detail) {
+        this.details.add(detail);
+        detail.setUserId(this.userId);
+    }
+
     
+    public void addSkill(ResumeSkill skill) {
+        skills.add(skill);
+        skill.setUserId(this.userId);
+    }
     
     public String getUsername() {
         return username;

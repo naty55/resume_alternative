@@ -1,9 +1,9 @@
-package com.ra.resume_alternative.resume;
+package com.ra.resume_alternative.resume.entity;
 
 public enum DetailType {
-    Phone,
+    PhoneNumber,
     Email,
-    LinkedIn,
+    Linkedin,
     Twitter,
     Github,
     Instegram,
