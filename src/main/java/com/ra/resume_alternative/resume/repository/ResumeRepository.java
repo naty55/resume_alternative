@@ -4,15 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ra.resume_alternative.resume.entity.Resume;
-import com.ra.resume_alternative.user.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface ResumeRepository extends JpaRepository<Resume, Long> {
-    List<Resume> findByUser(User user);
+    List<Resume> findByUserId(Long userId);
     Optional<Resume> findByResumeId(Long resumeId);
 
     @Modifying
@@ -26,11 +24,11 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
     @Query(value = "select exists(select 1 from resumes where resume_id=:resumeId and user_id=:userId limit 1)", nativeQuery = true)
     int isExistByREsumeIdAndUserId(Long resumeId, Long userId);
 
-    @Query("select r from resumes r where r.resumeId=:resumeId and r.user.userId=:userId")
+    @Query("select r from resumes r where r.resumeId=:resumeId and r.userId=:userId")
     Optional<Resume> findByResumeIdAndUserId(Long resumeId, Long userId);
 
     @Modifying
-    @Query("delete from resumes r where r.resumeId=:resumeId and r.user.userId=:userId")
+    @Query("delete from resumes r where r.resumeId=:resumeId and r.userId=:userId")
     void deleteResumeByResumeIdAndUserId(Long resumeId, Long userId);
 
     @Modifying
@@ -50,11 +48,11 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
     void deleteDetailFromResume(Long resumeId, Long detailId);
 
     @Modifying
-    @Query("update resumes r set r.title=:title where r.resumeId=:resumeId and r.user.userId=:userId")
+    @Query("update resumes r set r.title=:title where r.resumeId=:resumeId and r.userId=:userId")
     void updateResumeTitleByResumeIdAndUserId(Long resumeId, Long userId, String title);
 
     @Modifying
-    @Query("update resumes r set r.styleName=:styleName where r.resumeId=:resumeId and r.user.userId=:userId")
+    @Query("update resumes r set r.styleName=:styleName where r.resumeId=:resumeId and r.userId=:userId")
     void updateResumeStylenameByResumeIdAndUserId(Long resumeId, Long userId, String styleName);
     
 
