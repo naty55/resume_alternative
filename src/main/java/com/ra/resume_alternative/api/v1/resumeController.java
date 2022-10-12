@@ -45,7 +45,7 @@ public class resumeController {
     public ResponseEntity<Resume> createResume(Authentication auth, @RequestParam("title") Optional<String> title, @RequestParam("style") Optional<String> style) {
         User user = userService.getUserFromAuthentication(auth);
         Resume created = resumeService.addResume(user, title, style);
-        return ResponseEntity.ok().body(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PostMapping("delete")
@@ -61,7 +61,7 @@ public class resumeController {
             throw new HttpMessageNotReadableException("missing parameter resumeId", new BadHttpRequest(), null);
         }
         User user = userService.getUserFromAuthentication(auth);
-        resumeService.update(user, resume);
+        resume = resumeService.update(user, resume);
         return ResponseEntity.ok().body(resume);
     }
 }
