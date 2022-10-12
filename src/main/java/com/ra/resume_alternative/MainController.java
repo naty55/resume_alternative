@@ -14,7 +14,7 @@ public class MainController {
     @Autowired
     SecurityService securityService;
 
-    @RequestMapping("/")
+    @RequestMapping(path = {"/*"})
     public String index(Model model, Authentication auth) {
         securityService.isAuthenticatedAndModel(auth, model);
         return "index";
