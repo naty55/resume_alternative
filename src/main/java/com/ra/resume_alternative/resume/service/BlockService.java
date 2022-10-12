@@ -3,7 +3,7 @@ package com.ra.resume_alternative.resume.service;
 import java.util.Optional;
 
 import com.ra.resume_alternative.resume.entity.ResumeBlock;
-import com.ra.resume_alternative.resume.error.RequestedEntityNotFoundException;
+import com.ra.resume_alternative.error.RequestedEntityNotFoundException;
 import com.ra.resume_alternative.resume.repository.BlockRepository;
 import com.ra.resume_alternative.resume.repository.ResumeRepository;
 
