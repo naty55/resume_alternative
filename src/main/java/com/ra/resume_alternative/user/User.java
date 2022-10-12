@@ -13,11 +13,16 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.ra.resume_alternative.resume.entity.Resume;
 import com.ra.resume_alternative.resume.entity.ResumeDetail;
 import com.ra.resume_alternative.resume.entity.ResumeSkill;
+
 
 
 
@@ -38,13 +43,18 @@ public class User {
     private String roles;
     private boolean verfiedEmail;
 
-    @OneToMany(orphanRemoval = true, mappedBy = "userId", fetch = FetchType.LAZY)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "userId")
     Set<ResumeSkill> skills = new HashSet<>();
-
-    @OneToMany(orphanRemoval = true, mappedBy="userId", fetch = FetchType.LAZY)
+    
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "userId")
     Set<ResumeDetail> details = new HashSet<>();
     
-    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userId", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OnDelete(action=OnDeleteAction.CASCADE)
     Set<Resume> resumes = new HashSet<>();
 
 
@@ -110,12 +120,12 @@ public class User {
     }
     public void addResume(Resume resume) {
         this.resumes.add(resume);
-        resume.setUser(this);
+        // resume.setUser(this);
     }
     public void removeResume(Resume resume) {
         if(resumes.contains(resume)) {
             resumes.remove(resume);
-            resume.setUser(null);
+            // resume.setUser(null);
         }
     }
 

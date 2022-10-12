@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,14 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ra.resume_alternative.user.User;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import com.ra.resume_alternative.user.User;
 
 
 @Entity(name="resumes")
@@ -29,10 +28,9 @@ public class Resume {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long resumeId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    @JsonIgnore
-    private User user;
+    @JoinColumn(name = "user_id", nullable = false)
+    @Column(nullable = false)
+    private Long userId;
 
     private String title;
     private String styleName;
@@ -42,7 +40,7 @@ public class Resume {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<ResumeBlock> blocks = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "resumes_skills", 
         joinColumns = {@JoinColumn(name="resume_id")},
@@ -51,7 +49,7 @@ public class Resume {
     @OnDelete(action=OnDeleteAction.CASCADE)
     private Set<ResumeSkill> skills = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "resumes_details", 
         joinColumns = {@JoinColumn(name="resume_id")},
@@ -65,7 +63,7 @@ public class Resume {
     }
 
     public Resume(User user,String title, Set<ResumeBlock> blocks, Set<ResumeSkill> skills) {
-        this.user = user;
+        this.userId = user.getUserId();
         this.title = title;
         setBlocks(blocks);
         setSkills(skills);
@@ -76,11 +74,11 @@ public class Resume {
     public void setResumeId(Long resumeId) {
         this.resumeId = resumeId;
     }
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
     public String getTitle() {
         return title;
@@ -108,17 +106,26 @@ public class Resume {
         return skills;
     }
     public void setSkills(Set<ResumeSkill> skills) {
+        this.skills.clear();
         skills.forEach(s -> this.addSkill(s));
     }
     public void addSkill(ResumeSkill skill) {
         skills.add(skill);
-        // skill.getResumes().add(this);
+        skill.setUserId(this.userId);
     }
     public void removeSkill(ResumeSkill skill) {
         if(skills.contains(skill)) {
             skills.remove(skill);
-            // skill.getResumes().remove(this);
         }
+    }
+
+    public void setDetails(Set<ResumeDetail> details) {
+        this.details.clear();
+        details.forEach(d -> addDetail(d));
+    }
+    public void addDetail(ResumeDetail d) {
+        details.add(d);
+        d.setUserId(this.userId);
     }
 
     public String getStyleName() {
@@ -128,9 +135,13 @@ public class Resume {
         this.styleName = styleName;
     }
 
+    public Set<ResumeDetail> getDetails() {
+        return details;
+    }
+
     @Override
     public String toString() {
         return "Resume [blocks=" + blocks + ", details=" + details + ", resumeId=" + resumeId + ", skills=" + skills
-                + ", styleName=" + styleName + ", title=" + title + ", user=" + user + "]";
+                + ", styleName=" + styleName + ", title=" + title + ", user=" + userId + "]";
     }    
 }

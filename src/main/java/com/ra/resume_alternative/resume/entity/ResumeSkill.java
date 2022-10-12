@@ -12,8 +12,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Table(uniqueConstraints = {@UniqueConstraint(name="TNU", columnNames = {"skillName", "skillType", "userId"})})
 @Entity(name="skills")
 public class ResumeSkill {
@@ -25,7 +23,6 @@ public class ResumeSkill {
     private SkillType skillType;
 
     @Column(nullable = false)
-    @JsonIgnore
     private Long userId;
 
     @ManyToMany(mappedBy = "skills")
@@ -80,6 +77,7 @@ public class ResumeSkill {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
 
 
     @Override
