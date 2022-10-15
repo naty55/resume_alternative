@@ -35,10 +35,7 @@ public class DetailService {
     
     public ResumeDetail updateDetail(Long userId, Long detailId, Optional<String> value) throws RequestedEntityNotFoundException {
         Optional<ResumeDetail> retrievedDetail = detailRepository.findByDetailIdAndUserId(detailId, userId);
-        if(retrievedDetail.isEmpty()) {
-            throw new RequestedEntityNotFoundException();
-        }
-        ResumeDetail detail = retrievedDetail.get();
+        ResumeDetail detail  = retrievedDetail.orElseThrow(RequestedEntityNotFoundException::new);
         value.ifPresent(v -> detail.setValue(v));
         return detailRepository.save(detail);
     }
